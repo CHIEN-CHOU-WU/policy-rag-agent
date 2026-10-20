@@ -21,6 +21,7 @@ Generic chatbots make this worse: they answer confidently without saying where t
 - **Works in two ways**:
   - a **web app** for end users
   - an **MCP server**, so Claude Desktop, Claude Code, or any MCP-compatible agent can use the same tools
+- **Model-agnostic** — runs on Claude in production, or on a local open-source model via Ollama at zero cost
 
 Source documents are public U.S. government publications (e.g. *Medicare & You*), downloaded by a script and not stored in this repo.
 
@@ -43,12 +44,18 @@ Source documents are public U.S. government publications (e.g. *Medicare & You*)
                     └───────┬──────────────┬───────┘
                             ▼              ▼
                 ┌──────────────────┐  ┌──────────────────┐
-                │ Agent (Claude    │  │ MCP server       │
-                │ tool-use loop)   │  │ (FastMCP)        │
-                └────────┬─────────┘  └────────┬─────────┘
-                         ▼                     ▼
-                 Streamlit web app     Claude Desktop / Code,
-                                       other MCP clients
+                │ Agent            │  │ MCP server       │
+                │ (tool-use loop)  │  │ (FastMCP)        │
+                └───┬─────────┬────┘  └────────┬─────────┘
+                    │         ▼                ▼
+                    │  Streamlit web app  Claude Desktop / Code,
+                    ▼                     other MCP clients
+          ┌───────────────────┐
+          │ LLM client (port) │
+          └───┬───────────┬───┘
+              ▼           ▼
+          Claude API    Ollama
+          (Anthropic)   (local)
 ```
 
 ## Design decisions
@@ -61,7 +68,12 @@ Source documents are public U.S. government publications (e.g. *Medicare & You*)
 
 **Tools are shared between the agent and the MCP server.** The same tool functions power both the web app and the MCP server, so behavior stays consistent.
 
-**Ports and adapters for storage.** The vector store sits behind an interface (`store/base.py`). Chroma is used for local development; a pgvector adapter can be added without touching the agent or tools.
+**Ports and adapters for storage and models.** Both external dependencies sit behind interfaces, so the agent and tools never depend on a specific vendor:
+
+- **Vector store** (`store/base.py`) — Chroma for local development; a pgvector adapter can be added without touching the agent or tools.
+- **LLM** (`llm/base.py`) — one interface for chat with tool calling. The Claude adapter is used for production quality; the Ollama adapter runs an open-source model locally for free, offline development and testing. Switching is a single setting (`LLM_PROVIDER`). Hosted free-tier providers (Groq, Google Gemini) are planned next, using their OpenAI-compatible endpoints.
+
+This also makes it possible to run the same evaluation across models and compare them directly.
 
 ## Evaluation
 
@@ -69,21 +81,25 @@ Source documents are public U.S. government publications (e.g. *Medicare & You*)
 
 A set of test questions with known answers and source pages is kept in `eval/questions.yaml`. Each run measures:
 
-| Metric | Result |
-|---|---|
-| Answer correctness | _TBD_ |
-| Citation accuracy (correct page cited) | _TBD_ |
+| Model | Answer correctness | Citation accuracy (correct page cited) |
+|---|---|---|
+| Claude (Anthropic API) | _TBD_ | _TBD_ |
+| Local model via Ollama | _TBD_ | _TBD_ |
+| Groq (planned) | _TBD_ | _TBD_ |
+| Google Gemini (planned) | _TBD_ | _TBD_ |
 
 Run it with:
 
 ```bash
-uv run python eval/run_eval.py
+uv run python eval/run_eval.py                         # uses LLM_PROVIDER from .env
+LLM_PROVIDER=ollama uv run python eval/run_eval.py     # or override per run
 ```
 
 ## Tech stack
 
 - **Python 3.12**, managed with [uv](https://github.com/astral-sh/uv)
 - **Claude API** (Anthropic) for reasoning and tool use
+- **Ollama** for running open-source models locally during development
 - **PyMuPDF** for PDF parsing
 - **Chroma** as the vector store
 - **MCP Python SDK (FastMCP)** for the MCP server
@@ -98,9 +114,31 @@ cd policy-rag-agent
 # Install dependencies
 uv sync
 
-# Add your API key
-cp .env.example .env        # then set ANTHROPIC_API_KEY
+# Configure the model
+cp .env.example .env
+```
 
+Choose one model provider in `.env`:
+
+```bash
+# Option A — Claude (best quality)
+LLM_PROVIDER=anthropic
+ANTHROPIC_API_KEY=your-key-here
+
+# Option B — local model via Ollama (free, runs offline)
+LLM_PROVIDER=ollama
+OLLAMA_MODEL=qwen3:8b
+```
+
+For Option B, install [Ollama](https://ollama.com) and pull a model that supports tool calling:
+
+```bash
+ollama pull qwen3:8b
+```
+
+Then build the index and run the app:
+
+```bash
 # Download source documents and build the index
 uv run python scripts/download_data.py
 uv run python -m policy_rag.ingest
@@ -145,6 +183,11 @@ policy-rag-agent/
 │   ├── store/
 │   │   ├── base.py           # VectorStore interface (port)
 │   │   └── chroma_store.py   # Chroma implementation (adapter)
+│   ├── llm/
+│   │   ├── base.py           # LLMClient interface (port)
+│   │   ├── anthropic_client.py  # Claude adapter
+│   │   ├── ollama_client.py     # Ollama adapter
+│   │   └── openai_compat_client.py  # Groq / Gemini adapter (planned)
 │   ├── retrieve.py
 │   ├── agent.py              # Claude tool-use loop
 │   ├── mcp_server.py
@@ -158,10 +201,11 @@ policy-rag-agent/
 ## Roadmap
 
 - [ ] M1 — Ingest: parse, chunk, and index documents with page metadata
-- [ ] M2 — Basic RAG with page citations
+- [ ] M2 — Basic RAG with page citations, behind a pluggable LLM interface (Claude + Ollama)
 - [ ] M3 — Agent with `search_policy` and `get_page` tools
 - [ ] M4 — MCP server
 - [ ] M5 — Web UI, evaluation results, demo
+- [ ] M6 — Add Groq and Gemini adapters once the Ollama setup is stable; run the same evaluation on every provider and publish the comparison
 
 ## Disclaimer
 
