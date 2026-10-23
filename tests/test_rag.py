@@ -34,6 +34,12 @@ def test_cited_sources_are_only_the_excerpts_the_answer_cites() -> None:
     assert [source.chunk for source in answer.cited_sources] == [PART_B]
 
 
+def test_cited_sources_list_one_excerpt_per_page() -> None:
+    part_a = make_chunk("c3", "Part A penalty", "Part A penalty details.", 32, 32)
+    answer = answer_question("q", FakeStore([PART_B, part_a]), FakeLLM("Outpatient care [p. 32]."))
+    assert [source.chunk for source in answer.cited_sources] == [PART_B]
+
+
 def test_citing_one_page_of_a_multi_page_excerpt_counts_as_citing_it() -> None:
     answer = answer_question("q", FakeStore([PART_B, ENROLLMENT]), FakeLLM("At 65 [p. 18]."))
     assert [source.chunk for source in answer.cited_sources] == [ENROLLMENT]

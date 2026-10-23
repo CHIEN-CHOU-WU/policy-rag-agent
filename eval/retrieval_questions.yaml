@@ -30,10 +30,10 @@ questions:
   - question: Does Medicare pay for long-term care in a nursing home?
     pages: [58, 59]
   - question: What happens at the Welcome to Medicare preventive visit?
-    pages: [57]
+    pages: [56, 57]
   - question: Does Medicare cover ambulance rides?
     pages: [34]
   - question: How do I appeal a coverage decision?
-    pages: [102]
+    pages: [102, 103]
   - question: Where can I get hospice care?
     pages: [29]

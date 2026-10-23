@@ -1,7 +1,9 @@
 """Builds the configured ``LLMClient``. The one place that picks a model provider."""
 
 from policy_rag.config import Settings
-from policy_rag.llm.base import LLMClient
+from policy_rag.llm.base import LLMClient, LLMError
+
+PROVIDERS = ("ollama", "gemini", "anthropic")
 
 
 def create_llm_client(settings: Settings) -> LLMClient:
@@ -15,5 +17,17 @@ def create_llm_client(settings: Settings) -> LLMClient:
             from policy_rag.llm.ollama_client import OllamaClient
 
             return OllamaClient(settings.ollama_model, settings.ollama_host)
+        case "gemini":
+            from policy_rag.llm.openai_compat_client import GEMINI_BASE_URL, OpenAICompatClient
+
+            if not settings.gemini_api_key:
+                raise LLMError("No Gemini API key found. Set GEMINI_API_KEY in .env.")
+            return OpenAICompatClient(
+                GEMINI_BASE_URL,
+                settings.gemini_api_key,
+                settings.gemini_model,
+                "Gemini",
+                requests_per_minute=settings.gemini_rpm,
+            )
         case other:
-            raise ValueError(f"Unknown LLM_PROVIDER {other!r}; expected 'anthropic' or 'ollama'.")
+            raise ValueError(f"Unknown LLM_PROVIDER {other!r}; expected one of {', '.join(PROVIDERS)}.")

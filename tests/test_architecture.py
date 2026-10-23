@@ -11,6 +11,7 @@ ADAPTER_FOR_SDK = {
     "chromadb": PACKAGE_ROOT / "store" / "chroma_store.py",
     "anthropic": PACKAGE_ROOT / "llm" / "anthropic_client.py",
     "ollama": PACKAGE_ROOT / "llm" / "ollama_client.py",
+    "openai": PACKAGE_ROOT / "llm" / "openai_compat_client.py",
 }
 
 

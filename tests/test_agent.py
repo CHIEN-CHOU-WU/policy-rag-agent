@@ -1,5 +1,5 @@
 from fakes import FakePageStore, FakeStore, ScriptedLLM, make_chunk, make_page
-from policy_rag.agent import SEARCH_FIRST, run_agent
+from policy_rag.agent import ANSWER_NOW, SEARCH_FIRST, run_agent
 from policy_rag.llm.base import AssistantTurn, ToolCall, ToolResults, UserMessage
 from policy_rag.rag import NOT_FOUND
 from policy_rag.tools import PolicyTools
@@ -81,6 +81,15 @@ def test_tool_errors_are_reported_to_the_model_and_recorded() -> None:
     assert result.steps[1].error == "There is no page 999."
 
 
+def test_last_round_asks_for_an_answer_from_what_was_found() -> None:
+    llm = ScriptedLLM([search("query 0", "s0"), search("query 1", "s1"), answer("Not covered [p. 58].")])
+    result = run_agent("q", llm, tools(), max_rounds=3)
+
+    assert llm.seen[2][-1] == UserMessage(ANSWER_NOW)
+    assert result.completed
+    assert result.text == "Not covered [p. 58]."
+
+
 def test_running_out_of_rounds_is_reported_honestly() -> None:
     llm = ScriptedLLM([search(f"query {n}", call_id=f"s{n}") for n in range(3)])
     result = run_agent("q", llm, tools(), max_rounds=3)
@@ -99,3 +108,10 @@ def test_uncited_answer_is_flagged() -> None:
 def test_not_found_after_searching_is_not_flagged_as_uncited() -> None:
     llm = ScriptedLLM([search("dental"), answer(NOT_FOUND)])
     assert not run_agent("q", llm, tools()).is_uncited
+
+
+def test_on_step_reports_each_tool_call_as_it_happens() -> None:
+    seen = []
+    llm = ScriptedLLM([search("dental"), answer("Not covered [p. 58].")])
+    result = run_agent("q", llm, tools(), on_step=seen.append)
+    assert seen == result.steps

@@ -2,8 +2,7 @@
 
 > An AI agent that answers questions about insurance policy documents with page-level citations — available as a web app and as an MCP server for Claude.
 
-<!-- TODO (M5): replace with demo GIF -->
-![Demo](docs/demo.gif)
+![Demo: the agent researches a question and answers with page citations](docs/demo.gif)
 
 ---
 
@@ -52,10 +51,10 @@ Source documents are public U.S. government publications (e.g. *Medicare & You*)
                     ▼                     other MCP clients
           ┌───────────────────┐
           │ LLM client (port) │
-          └───┬───────────┬───┘
-              ▼           ▼
-          Claude API    Ollama
-          (Anthropic)   (local)
+          └───┬─────┬─────┬───┘
+              ▼     ▼     ▼
+         Claude  Ollama  Gemini
+          (API)  (local) (OpenAI-compatible API)
 ```
 
 ## Design decisions
@@ -71,35 +70,54 @@ Source documents are public U.S. government publications (e.g. *Medicare & You*)
 **Ports and adapters for storage and models.** Both external dependencies sit behind interfaces, so the agent and tools never depend on a specific vendor:
 
 - **Vector store** (`store/base.py`) — Chroma for local development; a pgvector adapter can be added without touching the agent or tools.
-- **LLM** (`llm/base.py`) — one interface for chat with tool calling. The Claude adapter is used for production quality; the Ollama adapter runs an open-source model locally for free, offline development and testing. Switching is a single setting (`LLM_PROVIDER`). Hosted free-tier providers (Groq, Google Gemini) are planned next, using their OpenAI-compatible endpoints.
+- **LLM** (`llm/base.py`) — one interface for chat with tool calling. The Claude adapter is used for production quality; the Ollama adapter runs an open-source model locally for free, offline development and testing. Switching is a single setting (`LLM_PROVIDER`). Google Gemini runs through its OpenAI-compatible endpoint (`llm/openai_compat_client.py`), which Groq can reuse next.
 
 This also makes it possible to run the same evaluation across models and compare them directly.
 
 ## Evaluation
 
-<!-- TODO (M5): fill in after running eval -->
+Measured on *Medicare & You 2027* with 18 questions (`eval/questions.yaml`): 15 answered by the handbook, each with the pages that hold the answer and a reference answer written from them, plus 3 the handbook doesn't cover, which must be declined.
 
-A set of test questions with known answers and source pages is kept in `eval/questions.yaml`. Each run measures:
+| Answering model | Mode | Answer correctness | Citation accuracy | Unsupported citations |
+|---|---|---|---|---|
+| qwen3:8b (Ollama, local) | RAG | 78% (14/18) | 100% | 6% |
+| qwen3:8b (Ollama, local) | Agent | 94% (17/18) | 100% | 0% |
+| qwen3.6:35b (Ollama, local) | RAG | **100% (18/18)** | 100% | 0% |
+| qwen3.6:35b (Ollama, local) | Agent | 89% (16/18) | 87% | 6% |
+| Claude (Anthropic API) | — | _TBD_ | _TBD_ | _TBD_ |
+| Groq (M6) | — | _TBD_ | _TBD_ | _TBD_ |
 
-| Model | Answer correctness | Citation accuracy (correct page cited) |
-|---|---|---|
-| Claude (Anthropic API) | _TBD_ | _TBD_ |
-| Local model via Ollama | _TBD_ | _TBD_ |
-| Groq (planned) | _TBD_ | _TBD_ |
-| Google Gemini (planned) | _TBD_ | _TBD_ |
+- **Answer correctness** — judged by `gemini-3.8-flash` against the reference answers; declining counts as correct only on the 3 out-of-scope questions (every run declined all 3).
+- **Citation accuracy** — share of answerable questions whose answer cites at least one page that holds the answer. Checked by code, no model involved.
+- **Unsupported citations** — share of answers citing a page the system never retrieved. Also checked by code.
+- Retrieval alone (`eval/run_retrieval_eval.py`, no LLM): the right page is the top result for 60% of questions and in the top 5 for 100% (MRR 0.76).
+
+**What the numbers show**
+
+- **The agent didn't beat RAG on its own.** Both local models searched only about once per question (1.0–1.1 tool calls). When that first search missed the key page — e.g. a search for "referral to see a specialist" returned the glossary definition instead of the comparison table — the agent answered from what it had instead of searching again. In manual tests Gemini did search a second time when the first results fell short, which is where an agent pays off.
+- **The citation check catches real mistakes.** A model sometimes turns a cross-reference in the text ("go to pages 33–57") into a citation; those pages were never retrieved, so they are flagged rather than trusted.
+
+**About the judge.** LLM judges disagree, so the same saved answers were graded by three judges (`--rejudge`). `gemini-3.8-flash` was the strictest and the one whose verdicts held up in a manual check of the disagreements; the local `qwen3.6:35b` agreed with it on 87% of verdicts and `gemini-3.5-flash-lite` on 83%, both mainly by passing answers that left out a key fact. With 15 answerable questions, one question is about 6 points, so treat small differences as noise.
+
+Gemini wasn't evaluated as an answering model: its free tier allows 20 requests per model per day, and an agent run takes several requests per question.
 
 Run it with:
 
 ```bash
-uv run python eval/run_eval.py                         # uses LLM_PROVIDER from .env
-LLM_PROVIDER=anthropic uv run python eval/run_eval.py  # or override per run
+uv run python eval/run_eval.py                                   # answer with LLM_PROVIDER, Gemini judge
+uv run python eval/run_eval.py --judge ollama                    # free local judge (qwen3.6:35b)
+uv run python eval/run_eval.py --rejudge                         # re-grade saved answers
+OLLAMA_MODEL=qwen3.6:35b uv run python eval/run_eval.py          # evaluate another model
 ```
+
+Saved answers and graded results are in `eval/results/`.
 
 ## Tech stack
 
 - **Python 3.12**, managed with [uv](https://github.com/astral-sh/uv)
 - **Claude API** (Anthropic) for reasoning and tool use
 - **Ollama** for running open-source models locally during development
+- **Google Gemini** (OpenAI-compatible API) as a hosted model and as the evaluation judge
 - **PyMuPDF** for PDF parsing
 - **Chroma** as the vector store
 - **MCP Python SDK (`MCPServer`)** for the MCP server
@@ -128,6 +146,10 @@ OLLAMA_MODEL=qwen3:8b
 # Option B — Claude (best quality)
 LLM_PROVIDER=anthropic
 ANTHROPIC_API_KEY=your-key-here
+
+# Option C — Google Gemini (free tier; also the evaluation judge)
+LLM_PROVIDER=gemini
+GEMINI_API_KEY=your-key-here
 ```
 
 For Option A, install [Ollama](https://ollama.com) and pull a model that supports tool calling:
@@ -150,6 +172,8 @@ uv run python -m policy_rag.ask --agent "How do I add dental coverage?"  # agent
 # Launch the web app
 uv run streamlit run src/policy_rag/app.py
 ```
+
+To regenerate the demo GIF: `uv sync --group demo && uv run playwright install chromium`, then `uv run --group demo python scripts/record_demo.py`.
 
 ## Using it as an MCP server
 
@@ -181,8 +205,10 @@ Then ask Claude something like *"Using the policy search tool, what does Medicar
 ```
 policy-rag-agent/
 ├── .mcp.json                 # registers the MCP server with Claude Code
+├── docs/demo.gif             # recorded by scripts/record_demo.py
 ├── scripts/
-│   └── download_data.py      # fetch public source PDFs
+│   ├── download_data.py      # fetch public source PDFs
+│   └── record_demo.py        # drive the web app and record the demo GIF
 ├── src/policy_rag/
 │   ├── config.py             # settings from environment / .env
 │   ├── models.py             # shared data types (Chunk, SearchResult)
@@ -200,19 +226,21 @@ policy-rag-agent/
 │   │   ├── anthropic_client.py  # Claude adapter
 │   │   ├── ollama_client.py     # Ollama adapter
 │   │   ├── factory.py           # picks the adapter from LLM_PROVIDER
-│   │   └── openai_compat_client.py  # Groq / Gemini adapter (planned)
+│   │   └── openai_compat_client.py  # Gemini adapter (OpenAI-compatible; Groq next)
 │   ├── retrieve.py           # search + format excerpts for the model
 │   ├── rag.py                # answer with page citations, checked against sources
 │   ├── tools.py              # search_policy / get_page, shared by agent and MCP server
-│   ├── agent.py              # tool-use agent loop (Claude or Ollama)
+│   ├── agent.py              # tool-use agent loop (any provider)
 │   ├── ask.py                # `python -m policy_rag.ask [--agent]` entry point
 │   ├── mcp_server.py         # MCP server exposing the tools
+│   ├── evaluation.py         # answer judging (batched) and citation metrics
 │   └── app.py                # Streamlit UI
 ├── eval/
 │   ├── retrieval_questions.yaml  # questions with known answer pages
 │   ├── run_retrieval_eval.py     # hit@k / MRR for retrieval (no LLM)
-│   ├── questions.yaml
-│   └── run_eval.py
+│   ├── questions.yaml            # questions with reference answers and pages
+│   ├── run_eval.py               # end-to-end eval, RAG and agent modes
+│   └── results/                  # saved results behind the table above
 └── tests/
 ```
 
@@ -222,8 +250,8 @@ policy-rag-agent/
 - [x] M2 — Basic RAG with page citations, behind a pluggable LLM interface (Claude + Ollama)
 - [x] M3 — Agent with `search_policy` and `get_page` tools
 - [x] M4 — MCP server
-- [ ] M5 — Web UI, evaluation results, demo
-- [ ] M6 — Add Groq and Gemini adapters once the Ollama setup is stable; run the same evaluation on every provider and publish the comparison
+- [x] M5 — Web UI, evaluation results, demo
+- [ ] M6 — Add a Groq adapter (Gemini landed in M5); run the same evaluation on every provider and publish the comparison
 
 ## Disclaimer
 

@@ -77,6 +77,9 @@ def _to_api_messages(message: Message) -> list[Any]:
                 }
                 for result in results
             ]
+        case _:
+            # Fail loudly: a silent None here surfaces later as a confusing error.
+            raise TypeError(f"Unsupported message type: {type(message).__name__}")
 
 
 def _to_api_tool(tool: ToolSpec) -> dict[str, Any]:

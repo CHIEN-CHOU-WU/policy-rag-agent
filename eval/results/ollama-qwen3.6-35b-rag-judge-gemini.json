@@ -1,0 +1,277 @@
+{
+  "provider": "ollama",
+  "model": "qwen3.6:35b",
+  "mode": "rag",
+  "judge": "gemini (gemini-3.8-flash)",
+  "summary": {
+    "questions": 18,
+    "answer_accuracy": 1.0,
+    "citation_accuracy": 1.0,
+    "unsupported_rate": 0.0,
+    "decline_accuracy": 1.0,
+    "avg_seconds": 4.42099942595491,
+    "avg_tool_calls": 0.0,
+    "failures": []
+  },
+  "results": [
+    {
+      "question": "What does Part B cover?",
+      "answerable": true,
+      "answer": "Medicare Part B helps cover the following [p. 32]:\n\n*   Medically necessary doctor’s services\n*   Outpatient care\n*   Some home health services\n*   Durable medical equipment\n*   Mental health services\n*   Limited outpatient prescription drugs\n*   Other medical services\n*   Many preventive services [p. 32]\n\nPart B also covers urgently needed care for sudden illnesses or injuries that are not medical emergencies, subject to a 20% coinsurance, copayment in hospital outpatient settings, and the Part B deductible [p. 55-56].",
+      "cited_pages": [
+        32,
+        55,
+        56
+      ],
+      "unsupported_pages": [],
+      "correct": true,
+      "reason": "The candidate accurately lists all services covered under Part B mentioned in the reference answer.",
+      "cites_expected_page": true,
+      "seconds": 12.605527624953538,
+      "tool_calls": 0
+    },
+    {
+      "question": "Does Medicare cover dental care?",
+      "answerable": true,
+      "answer": "In most cases, Original Medicare does not cover dental care, such as routine cleanings, fillings, tooth extractions, or dentures [p. 58]. However, Original Medicare may pay for some dental services that are closely related to certain covered medical procedures, such as heart valve repair or replacement, organ transplants, cancer-related treatments, or dialysis for End-Stage Renal Disease (ESRD) [p. 58].\n\nAdditionally, if you have a Medicare Advantage Plan or Medicare Cost Plan, these plans may cover extra benefits like dental services [p. 58].",
+      "cited_pages": [
+        58
+      ],
+      "unsupported_pages": [],
+      "correct": true,
+      "reason": "The candidate correctly states that Original Medicare generally does not cover dental care and that Medicare Advantage or Cost Plans may cover it as an extra benefit.",
+      "cites_expected_page": true,
+      "seconds": 3.9378927079960704,
+      "tool_calls": 0
+    },
+    {
+      "question": "When is my Initial Enrollment Period for Part A and Part B?",
+      "answerable": true,
+      "answer": "Your Initial Enrollment Period is a 7-month period that begins 3 months before the month you turn 65 and ends 3 months after the month you turn 65 [p. 17].\n\nIf your birthday is on the first day of the month, this period starts 4 months before the month you turn 65, includes your birthday month, and ends 2 months after the month you turn 65 [p. 17].",
+      "cited_pages": [
+        17
+      ],
+      "unsupported_pages": [],
+      "correct": true,
+      "reason": "The candidate correctly defines the 7-month Initial Enrollment Period window.",
+      "cites_expected_page": true,
+      "seconds": 3.1368855419568717,
+      "tool_calls": 0
+    },
+    {
+      "question": "Will I pay a penalty if I sign up for Part B late?",
+      "answerable": true,
+      "answer": "Yes, you may have to pay a late enrollment penalty for Part B if you don’t sign up when you’re first eligible. The penalty increases your monthly premium by 10% for each full 12-month period you could have had Part B but didn’t sign up [p. 23]. You must pay this penalty for as long as you have Part B [p. 23].\n\nHowever, you may not have to pay the penalty if you sign up during a Special Enrollment Period (for example, if you had group health coverage based on current employment) or if you enroll in a Medicare Savings Program [p. 23].",
+      "cited_pages": [
+        23
+      ],
+      "unsupported_pages": [],
+      "correct": true,
+      "reason": "The candidate includes all key facts regarding the Part B late enrollment penalty and exceptions.",
+      "cites_expected_page": true,
+      "seconds": 3.723790000192821,
+      "tool_calls": 0
+    },
+    {
+      "question": "How often does Medicare cover a flu shot?",
+      "answerable": true,
+      "answer": "Medicare covers the flu vaccine once per flu season [p. 44].",
+      "cited_pages": [
+        44
+      ],
+      "unsupported_pages": [],
+      "correct": true,
+      "reason": "The candidate accurately states that Medicare covers the flu vaccine once per flu season.",
+      "cites_expected_page": true,
+      "seconds": 1.6332400841638446,
+      "tool_calls": 0
+    },
+    {
+      "question": "Am I covered by Medicare when I travel abroad?",
+      "answerable": true,
+      "answer": "Generally, Original Medicare does not cover medical care while you are traveling outside the U.S. [p. 12]. There are limited exceptions, such as coverage for medically necessary ambulance transportation to a foreign hospital if you are admitted for covered inpatient hospital services; in this case, you pay 20% of the Medicare-approved amount plus the Part B deductible [p. 55].\n\nMedicare Advantage Plans generally do not cover medical care outside the U.S., but some plans may offer an extra benefit that covers emergency and urgently needed services when traveling abroad [p. 12]. Additionally, you may be able to buy a Medicare Supplement Insurance (Medigap) policy that covers emergency care outside the U.S. [p. 12].",
+      "cited_pages": [
+        12,
+        55
+      ],
+      "unsupported_pages": [],
+      "correct": true,
+      "reason": "The candidate correctly details Original Medicare's lack of foreign travel coverage along with Medigap and Medicare Advantage options.",
+      "cites_expected_page": true,
+      "seconds": 3.53965420788154,
+      "tool_calls": 0
+    },
+    {
+      "question": "Do I need a referral to see a specialist?",
+      "answerable": true,
+      "answer": "Whether you need a referral to see a specialist depends on the type of Medicare plan you have:\n\n*   **Original Medicare (Part A and Part B):** In most cases, you do not need a referral to use a specialist [p. 11].\n*   **Medicare Advantage (Part C):** You may need to get a referral to use a specialist [p. 11].\n*   **Special Needs Plans (SNP):** Some SNPs require referrals and some don’t. You must check with your specific plan to find out if you need a referral [p. 73].\n\nAdditionally, without a referral, your Medicare Advantage plan may not pay for services from a specialist [p. 122].",
+      "cited_pages": [
+        11,
+        73,
+        122
+      ],
+      "unsupported_pages": [],
+      "correct": true,
+      "reason": "The candidate correctly notes that Original Medicare generally does not require referrals while Medicare Advantage plans may.",
+      "cites_expected_page": true,
+      "seconds": 3.4763384577818215,
+      "tool_calls": 0
+    },
+    {
+      "question": "When can I join or switch a Medicare drug plan?",
+      "answerable": true,
+      "answer": "You can join or switch a Medicare drug plan during the following times:\n\n*   **Initial Enrollment Period:** When you first become eligible for Medicare [p. 84].\n*   **Open Enrollment Period:** From October 15 to December 7 each year. Your coverage will begin on January 1 if the plan receives your request by December 7 [pp. 84, 75].\n*   **Medicare Advantage Open Enrollment Period:** If you are already enrolled in a Medicare Advantage Plan, you can switch to a different Medicare Advantage Plan or switch to Original Medicare and join a separate Medicare drug plan once between January 1 and March 31 each year [pp. 84, 75].\n*   **Special Enrollment Periods:** You may qualify for a Special Enrollment Period if certain life events occur, such as moving, losing other insurance coverage, or qualifying for Extra Help or losing Medicaid coverage [p. 84]. Additionally, if you sign up for Part A or Part B during a Special Enrollment Period due to an exceptional circumstance, you have 2 months to join a Medicare drug plan [p. 84].\n*   **General Enrollment Period (for Part B only):** If you do not get Part A and only signed up for Part B during the General Enrollment Period (January 1 – March 31), you can join a Medicare drug plan within 2 months after signing up for Part B [p. 84].\n\nYour drug coverage will start the month after the plan gets your request to join [p. 84].",
+      "cited_pages": [
+        75,
+        84
+      ],
+      "unsupported_pages": [],
+      "correct": true,
+      "reason": "The candidate covers all the enrollment periods specified in the reference answer for joining or switching a drug plan.",
+      "cites_expected_page": true,
+      "seconds": 6.38367429189384,
+      "tool_calls": 0
+    },
+    {
+      "question": "Can I change my Medicare Advantage Plan between January and March?",
+      "answerable": true,
+      "answer": "Yes, you can change your Medicare Advantage Plan between January 1 and March 31 during the Medicare Advantage Open Enrollment Period [p. 75]. During this time, if you are already in a Medicare Advantage Plan, you can:\n\n*   Switch to another Medicare Advantage Plan (with or without drug coverage) [p. 75].\n*   Drop your Medicare Advantage Plan and return to Original Medicare [p. 75]. If you do this, you can also join a separate Medicare drug plan [p. 75].\n\nAny changes made during this period will be effective the first of the month after the plan receives your request [p. 75]. Note that you cannot switch from Original Medicare to a Medicare Advantage Plan, join a separate Medicare drug plan if you have Original Medicare, or switch from one Medicare drug plan to another if you have Original Medicare during this period [p. 75]. You can only make one change during this period [p. 75].",
+      "cited_pages": [
+        75
+      ],
+      "unsupported_pages": [],
+      "correct": true,
+      "reason": "The candidate correctly confirms that changes can be made during the Medicare Advantage Open Enrollment Period and details the allowed changes.",
+      "cites_expected_page": true,
+      "seconds": 5.157503334339708,
+      "tool_calls": 0
+    },
+    {
+      "question": "What are Medicare Savings Programs?",
+      "answerable": true,
+      "answer": "Medicare Savings Programs are state-based programs that help people with limited income and resources pay some of their Medicare costs if they meet certain conditions [p. 95]. There are four kinds of these programs, though only one is detailed in the provided text:\n\n1. **Qualified Medicare Beneficiary (QMB):** This program helps pay for Part A premiums (if you don’t have premium-free Part A) and Part B premiums [p. 95]. Additionally, Medicare providers cannot bill you for Medicare deductibles, coinsurance, or copayments for covered services [p. 95]. If you receive a bill, you can request a refund for any payments already made on covered services [p. 95].\n\nThe provided excerpts do not list the other three types of Medicare Savings Programs [p. 95].",
+      "cited_pages": [
+        95
+      ],
+      "unsupported_pages": [],
+      "correct": true,
+      "reason": "The candidate accurately describes Medicare Savings Programs, notes there are four kinds, and names the QMB program.",
+      "cites_expected_page": true,
+      "seconds": 4.049696166999638,
+      "tool_calls": 0
+    },
+    {
+      "question": "Does Medicare pay for long-term care in a nursing home?",
+      "answerable": true,
+      "answer": "No, Medicare does not pay for non-medical long-term care services in a nursing home [p. 58-59]. It only covers short-term, skilled nursing facility care when you have a qualifying inpatient hospital stay and need daily skilled care [p. 31].",
+      "cited_pages": [
+        31,
+        58,
+        59
+      ],
+      "unsupported_pages": [],
+      "correct": true,
+      "reason": "The candidate correctly states that Medicare does not pay for non-medical long-term care in a nursing home.",
+      "cites_expected_page": true,
+      "seconds": 3.0438512922264636,
+      "tool_calls": 0
+    },
+    {
+      "question": "What happens at the Welcome to Medicare preventive visit?",
+      "answerable": true,
+      "answer": "During the \"Welcome to Medicare\" preventive visit, which is available during the first 12 months of having Part B, the following occurs:\n\n*   **Review and Education:** The provider reviews your medical and social history related to your health. They also provide education and counseling about preventive services, including certain screenings, vaccines (such as flu, pneumococcal, and other recommended vaccines), and referrals for other care if needed [p. 56-57].\n*   **Opioid Review:** If you have a current prescription for opioids, the provider reviews your potential risk factors for Opioid Use Disorder, evaluates your pain severity and current treatment plan, provides information on non-opioid treatment options, and may refer you to a specialist [p. 56-57].\n*   **Risk Factor Review:** The provider reviews your potential risk factors for substance use disorders, depression, and alcohol and tobacco use, and refers you for treatment if needed [pp. 56-57].\n\nThis visit is not a physical exam. You pay nothing for the visit if your doctor or health care provider accepts assignment [p. 56-57]. If additional tests or services are performed that Medicare does not cover under this benefit, you may have to pay coinsurance and the Part B deductible, or the full amount if the services are not covered at all [p. 57].",
+      "cited_pages": [
+        56,
+        57
+      ],
+      "unsupported_pages": [],
+      "correct": true,
+      "reason": "The candidate correctly states that it is not a physical exam and describes the review, education, counseling, screenings, vaccines, and referrals.",
+      "cites_expected_page": true,
+      "seconds": 5.824791374616325,
+      "tool_calls": 0
+    },
+    {
+      "question": "Does Medicare cover ambulance rides?",
+      "answerable": true,
+      "answer": "Yes, Medicare covers certain ambulance rides under specific conditions:\n\n**Ground Ambulance**\n*   **Emergency:** Covered for medically necessary transport to a hospital, critical access hospital, rural emergency hospital, or skilled nursing facility when using another vehicle would endanger your health [p. 34].\n*   **Non-Emergency:** May be covered if you have a written order from your doctor stating it is medically necessary (e.g., for dialysis transport) [p. 34].\n*   **Coverage Limit:** Medicare only covers transport to the nearest appropriate medical facility able to provide the needed care [p. 34].\n\n**Air or Helicopter Ambulance**\n*   Covered if you need immediate and rapid transport that ground transportation cannot provide [p. 34].\n\n**Costs**\n*   You pay 20% of the Medicare-approved amount, and the Part B deductible applies [p. 34].\n\n**Travel Outside the U.S.**\n*   Medicare generally does not cover health care while traveling outside the U.S., including ambulance rides.\n*   **Exception:** Medicare may cover medically necessary ambulance transportation to a foreign hospital only if you are admitted for covered inpatient hospital services. You pay 20% of the Medicare-approved amount, and the Part B deductible applies [p. 55].\n*   Some Medicare Advantage Plans may offer extra benefits for emergency services while traveling outside the U.S. [p. 55].",
+      "cited_pages": [
+        34,
+        55
+      ],
+      "unsupported_pages": [],
+      "correct": true,
+      "reason": "The candidate accurately describes coverage conditions for both ground and air ambulance services.",
+      "cites_expected_page": true,
+      "seconds": 5.809226708021015,
+      "tool_calls": 0
+    },
+    {
+      "question": "How do I appeal a coverage decision?",
+      "answerable": true,
+      "answer": "How to appeal a coverage decision depends on your type of Medicare coverage:\n\n**For Original Medicare:**\n*   Locate the \"Medicare Summary Notice\" (MSN) showing the item or service you are appealing [p. 103].\n*   Circle the item(s) you disagree with and write an explanation of why you disagree [p. 103]. You can write on the MSN or attach a separate paper [p. 103].\n*   Include your name, phone number, and Medicare Number on the MSN [p. 103].\n*   Send the MSN (or a copy) to the Medicare Administrative Contractor listed on it, along with any supporting information from your health care provider [p. 103]. Alternatively, you can use Form CMS-20027 [p. 103].\n*   File by the deadline listed on the MSN [p. 103]. If you miss the deadline, you may still file if you can show good cause for the delay (e.g., disability, illness, or accident) [p. 103].\n\n**For Medicare Advantage Plans or other Medicare health plans:**\n*   The timeframe for filing may differ from Original Medicare [p. 103].\n*   Review materials sent by your plan, call your plan, or visit Medicare.gov/providers-services/claims-appeals-complaints/appeals/medicare-health-plans for more information [p. 103].\n\n**For a separate Medicare drug plan:**\n*   You have the right to get a written explanation (called a \"coverage determination\") from your plan regarding coverage decisions, exceptions, or costs [p. 103].\n\n**General Tips:**\n*   You can appoint a representative (such as a family member, friend, attorney, or doctor) to act on your behalf [p. 104].\n*   You can get help filing an appeal from your State Health Insurance Assistance Program (SHIP); find your SHIP phone number on pages 114–117 [p. 104].\n*   You may ask your doctor, supplier, or other health care provider for information to strengthen your appeal [p. 102]. Keep copies of everything related to the appeal [p. 102].",
+      "cited_pages": [
+        102,
+        103,
+        104
+      ],
+      "unsupported_pages": [],
+      "correct": true,
+      "reason": "The candidate correctly details the appeal process using the Medicare Summary Notice for Original Medicare and following plan instructions for Medicare plans.",
+      "cites_expected_page": true,
+      "seconds": 8.816305791027844,
+      "tool_calls": 0
+    },
+    {
+      "question": "Where can I get hospice care?",
+      "answerable": true,
+      "answer": "You can usually get Medicare-certified hospice care in your home or other facility where you live, such as an assisted living facility or a nursing home [p. 28-29]. Additionally, short-term inpatient care to manage pain and symptoms must be provided in a Medicare-approved facility, like a hospice facility, hospital, or skilled nursing facility that contracts with the hospice provider [p. 29]. Inpatient respite care for caregiver relief is also available in a Medicare-approved facility [p. 29].",
+      "cited_pages": [
+        28,
+        29
+      ],
+      "unsupported_pages": [],
+      "correct": true,
+      "reason": "The candidate correctly identifies that hospice care is usually provided at home or in facilities where you live, like assisted living or nursing homes.",
+      "cites_expected_page": true,
+      "seconds": 3.4962875829078257,
+      "tool_calls": 0
+    },
+    {
+      "question": "How do I renew my passport?",
+      "answerable": false,
+      "answer": "I couldn't find this in the provided documents.",
+      "cited_pages": [],
+      "unsupported_pages": [],
+      "correct": true,
+      "reason": "Declined as expected.",
+      "cites_expected_page": null,
+      "seconds": 1.3618744579143822,
+      "tool_calls": 0
+    },
+    {
+      "question": "What are the federal income tax brackets for 2027?",
+      "answerable": false,
+      "answer": "I couldn't find this in the provided documents.",
+      "cited_pages": [],
+      "unsupported_pages": [],
+      "correct": true,
+      "reason": "Declined as expected.",
+      "cites_expected_page": null,
+      "seconds": 2.3876912500709295,
+      "tool_calls": 0
+    },
+    {
+      "question": "How do I apply for a U.S. student visa?",
+      "answerable": false,
+      "answer": "I couldn't find this in the provided documents.",
+      "cited_pages": [],
+      "unsupported_pages": [],
+      "correct": true,
+      "reason": "Declined as expected.",
+      "cites_expected_page": null,
+      "seconds": 1.193758792243898,
+      "tool_calls": 0
+    }
+  ]
+}

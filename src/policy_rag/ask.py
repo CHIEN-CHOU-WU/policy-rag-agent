@@ -11,7 +11,7 @@ import argparse
 import sys
 from collections.abc import Iterable
 
-from policy_rag.agent import AgentAnswer, AgentStep, run_agent
+from policy_rag.agent import AgentAnswer, describe_step, run_agent
 from policy_rag.config import load_settings
 from policy_rag.llm.base import LLMError
 from policy_rag.llm.factory import create_llm_client
@@ -60,22 +60,11 @@ def _print_answer(answer: Answer) -> None:
 def _print_agent_answer(answer: AgentAnswer) -> None:
     print("Research steps:")
     for number, step in enumerate(answer.steps, start=1):
-        print(f"  {number}. {_describe(step)}")
+        print(f"  {number}. {describe_step(step)}")
     print()
     print(answer.text)
     _print_sources(f"p. {page:<7} {label}" for page, label in answer.cited_sources)
     _print_warnings(answer.is_uncited, answer.unsupported_pages)
-
-
-def _describe(step: AgentStep) -> str:
-    arguments = ", ".join(repr(value) for value in step.arguments.values())
-    if step.error:
-        outcome = f"error: {step.error}"
-    elif step.pages:
-        outcome = "p. " + ", ".join(str(page) for page in step.pages)
-    else:
-        outcome = "nothing found"
-    return f"{step.tool}({arguments}) → {outcome}"
 
 
 def _print_sources(lines: Iterable[str]) -> None:

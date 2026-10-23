@@ -11,10 +11,12 @@ dependencies = [
     "chromadb>=1.5.9",
     "mcp>=2.3.0",
     "ollama>=0.6.3",
+    "openai>=3.37.0",
     "pydantic>=2.14.1",
     "pymupdf>=2.0",
     "python-dotenv>=1.2.4",
     "pyyaml>=6.0.3",
+    "streamlit>=1.66.1",
 ]
 
 [build-system]
@@ -22,6 +24,10 @@ requires = ["uv_build>=0.13.5,<0.14.0"]
 build-backend = "uv_build"
 
 [dependency-groups]
+demo = [
+    "pillow>=13.0.0",
+    "playwright>=1.64.1",
+]
 dev = [
     "pytest>=9.1.1",
 ]

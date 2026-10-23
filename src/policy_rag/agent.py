@@ -9,6 +9,7 @@ Citations are checked against every page the tools actually returned during
 the run, so a page the agent never looked at can't be passed off as a source.
 """
 
+from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any
 
@@ -22,6 +23,13 @@ MAX_ROUNDS = 6
 # be forced to call a tool, and "say you couldn't find it" is otherwise a valid
 # reply before any search has run.
 SEARCH_FIRST = "You haven't searched the documents yet. Use search_policy before answering."
+
+# Sent before the last round, so research that has found enough still ends in
+# an answer instead of running out of rounds mid-search.
+ANSWER_NOW = (
+    "You've reached the research limit. Answer now from what you've found, "
+    "following the answer rules. Do not call any more tools."
+)
 
 AGENT_PROMPT = f"""\
 You research questions about an insurance policy document with tools, then answer.
@@ -67,13 +75,20 @@ class AgentAnswer:
 
 
 def run_agent(
-    question: str, llm: LLMClient, tools: PolicyTools, max_rounds: int = MAX_ROUNDS
+    question: str,
+    llm: LLMClient,
+    tools: PolicyTools,
+    max_rounds: int = MAX_ROUNDS,
+    on_step: Callable[[AgentStep], None] | None = None,
 ) -> AgentAnswer:
+    """Research ``question`` with the tools, then answer. ``on_step`` sees each tool call as it finishes."""
     messages: list[Message] = [UserMessage(question)]
     steps: list[AgentStep] = []
     pages_seen: dict[int, str] = {}
 
-    for _ in range(max_rounds):
+    for round_number in range(1, max_rounds + 1):
+        if round_number == max_rounds and steps:
+            messages.append(UserMessage(ANSWER_NOW))
         turn = llm.chat(AGENT_PROMPT, messages, TOOL_SPECS)
         messages.append(turn)
         if not turn.tool_calls:
@@ -88,17 +103,18 @@ def run_agent(
             results.append(outcome.result)
             for page, label in outcome.pages_seen.items():
                 pages_seen.setdefault(page, label)
-            steps.append(
-                AgentStep(
-                    tool=call.name,
-                    arguments=call.arguments,
-                    pages=list(outcome.pages_seen),
-                    error=outcome.result.content if outcome.result.is_error else None,
-                )
+            step = AgentStep(
+                tool=call.name,
+                arguments=call.arguments,
+                pages=list(outcome.pages_seen),
+                error=outcome.result.content if outcome.result.is_error else None,
             )
+            steps.append(step)
+            if on_step:
+                on_step(step)
         messages.append(ToolResults(results))
 
-    # Out of rounds: say so rather than force an answer from partial research.
+    # Still calling tools after being told to answer: say so rather than guess.
     return AgentAnswer(
         text=f"I couldn't finish researching this within {max_rounds} steps.",
         steps=steps,
@@ -107,6 +123,18 @@ def run_agent(
         unsupported_pages=[],
         completed=False,
     )
+
+
+def describe_step(step: AgentStep) -> str:
+    """One line for a research step, e.g. ``search_policy('dental') → p. 58, 10``."""
+    arguments = ", ".join(repr(value) for value in step.arguments.values())
+    if step.error:
+        outcome = f"error: {step.error}"
+    elif step.pages:
+        outcome = "p. " + ", ".join(str(page) for page in step.pages)
+    else:
+        outcome = "nothing found"
+    return f"{step.tool}({arguments}) → {outcome}"
 
 
 def _already_nudged(messages: list[Message]) -> bool:

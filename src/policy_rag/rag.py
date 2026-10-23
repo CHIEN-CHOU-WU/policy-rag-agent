@@ -47,13 +47,19 @@ class Answer:
 
     @property
     def cited_sources(self) -> list[SearchResult]:
-        """The retrieved excerpts the answer actually cites, in retrieval order."""
+        """The cited excerpts, one per page, in retrieval order.
+
+        Citations name pages, not excerpts, so when several excerpts share a
+        cited page only the best-ranked one is listed; the others may cover a
+        different topic on the same page (Part A vs. Part B penalties, say).
+        """
         cited = set(self.cited_pages)
-        return [
-            source
-            for source in self.sources
-            if cited & set(range(source.chunk.page_start, source.chunk.page_end + 1))
-        ]
+        by_page: dict[str, SearchResult] = {}
+        for source in self.sources:
+            chunk = source.chunk
+            if cited & set(range(chunk.page_start, chunk.page_end + 1)):
+                by_page.setdefault(chunk.page_label, source)
+        return list(by_page.values())
 
     @property
     def is_uncited(self) -> bool:

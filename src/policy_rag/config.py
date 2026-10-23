@@ -17,6 +17,9 @@ class Settings:
     anthropic_model: str
     ollama_model: str
     ollama_host: str
+    gemini_api_key: str
+    gemini_model: str
+    gemini_rpm: int
 
 
 def load_settings() -> Settings:
@@ -30,4 +33,8 @@ def load_settings() -> Settings:
         anthropic_model=os.getenv("ANTHROPIC_MODEL", "claude-opus-5-5"),
         ollama_model=os.getenv("OLLAMA_MODEL", "qwen3:8b"),
         ollama_host=os.getenv("OLLAMA_HOST", "http://localhost:11434"),
+        gemini_api_key=os.getenv("GEMINI_API_KEY", ""),
+        gemini_model=os.getenv("GEMINI_MODEL", "gemini-3.5-flash"),
+        # The free tier allows 5 requests per minute per model.
+        gemini_rpm=int(os.getenv("GEMINI_RPM", "5")),
     )

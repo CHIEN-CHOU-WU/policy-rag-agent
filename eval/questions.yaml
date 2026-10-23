@@ -1,0 +1,120 @@
+# End-to-end evaluation for "Medicare & You 2027".
+#
+# Each answerable question has the printed page(s) that answer it and a short
+# reference answer written from the handbook text on those pages. A judge model
+# compares the system's answer with the reference, so a reference holds only the
+# facts that answer the question; related details belong in neither the reference
+# nor the grading.
+#
+# Questions with `pages: []` are not covered by the handbook; the system should
+# decline with its fixed "couldn't find this" reply.
+
+questions:
+  - question: What does Part B cover?
+    pages: [9, 32]
+    reference: >-
+      Medically necessary doctor's services, outpatient care, some home health services,
+      durable medical equipment, mental health services, limited outpatient prescription
+      drugs, and many preventive services.
+
+  - question: Does Medicare cover dental care?
+    pages: [58]
+    reference: >-
+      Original Medicare (Part A and Part B) doesn't cover most dental care. Medicare
+      Advantage Plans and Medicare Cost Plans may cover dental services as an extra benefit.
+
+  - question: When is my Initial Enrollment Period for Part A and Part B?
+    pages: [17]
+    reference: >-
+      A 7-month period that begins 3 months before the month you turn 65, includes your
+      birthday month, and ends 3 months after it.
+
+  - question: Will I pay a penalty if I sign up for Part B late?
+    pages: [23]
+    reference: >-
+      Yes, usually. The monthly Part B premium can go up 10% for each full 12 months you
+      could have had Part B but didn't sign up, and you pay it for as long as you have
+      Part B. A Special Enrollment Period or a Medicare Savings Program may avoid it.
+
+  - question: How often does Medicare cover a flu shot?
+    pages: [44]
+    reference: >-
+      Once per flu season.
+
+  - question: Am I covered by Medicare when I travel abroad?
+    pages: [12, 79]
+    reference: >-
+      Original Medicare generally doesn't cover medical care outside the U.S. A Medigap
+      policy may cover emergency care abroad, and some Medicare Advantage Plans offer an
+      extra benefit for emergency and urgently needed care when traveling.
+
+  - question: Do I need a referral to see a specialist?
+    pages: [11]
+    reference: >-
+      With Original Medicare, in most cases no. With a Medicare Advantage Plan, you may
+      need a referral.
+
+  - question: When can I join or switch a Medicare drug plan?
+    pages: [84]
+    reference: >-
+      During your Initial Enrollment Period, during Open Enrollment (October 15 to
+      December 7 each year), during the Medicare Advantage Open Enrollment Period
+      (January 1 to March 31, if already in a Medicare Advantage Plan), after signing
+      up for Part B in the General Enrollment Period, or during a Special Enrollment
+      Period if you qualify.
+
+  - question: Can I change my Medicare Advantage Plan between January and March?
+    pages: [75]
+    reference: >-
+      Yes. During the Medicare Advantage Open Enrollment Period (January 1 to March 31),
+      if you're already in a Medicare Advantage Plan you can switch to another Medicare
+      Advantage Plan, or drop it and return to Original Medicare (and join a drug plan).
+
+  - question: What are Medicare Savings Programs?
+    pages: [95]
+    reference: >-
+      State programs that help people with limited income and resources pay some Medicare
+      costs, such as premiums. There are 4 kinds, including the Qualified Medicare
+      Beneficiary (QMB) program.
+
+  - question: Does Medicare pay for long-term care in a nursing home?
+    pages: [58, 59]
+    reference: >-
+      No. Medicare doesn't cover non-medical long-term care (custodial care), including
+      in a nursing home.
+
+  - question: What happens at the Welcome to Medicare preventive visit?
+    pages: [56, 57]
+    reference: >-
+      It isn't a physical exam. It reviews your medical and social history and gives
+      education and counseling about preventive services, including screenings,
+      vaccines, and referrals for other care.
+
+  - question: Does Medicare cover ambulance rides?
+    pages: [34]
+    reference: >-
+      Yes, ground ambulance transportation to a hospital or skilled nursing facility when
+      it's medically necessary and other transport could endanger your health. Air
+      ambulance may be covered when ground transport can't provide the rapid care needed.
+
+  - question: How do I appeal a coverage decision?
+    pages: [102, 103]
+    reference: >-
+      It depends on your coverage. With Original Medicare, use the Medicare Summary
+      Notice: circle the items you disagree with, explain why, and send it. With a
+      Medicare plan, follow the plan's appeal instructions.
+
+  - question: Where can I get hospice care?
+    pages: [29]
+    reference: >-
+      Usually in your home or another facility where you live, like an assisted living
+      facility or a nursing home.
+
+  - question: How do I renew my passport?
+    pages: []
+
+  - question: What are the federal income tax brackets for 2027?
+    pages: []
+
+  - question: How do I apply for a U.S. student visa?
+    pages: []
