@@ -1,17 +1,18 @@
 """Build the search index: ``uv run python -m policy_rag.ingest``.
 
 Parses every PDF in the raw data directory, chunks it by section, and rebuilds
-the vector store from scratch so no stale chunks survive a re-run.
+the vector store from scratch so no stale chunks survive a re-run. The cleaned
+full text of every page is saved too, for reading a page in context.
 """
 
 import sys
 from collections import Counter
 
 from policy_rag.config import load_settings
-from policy_rag.ingest.chunk import chunk_document
+from policy_rag.ingest.chunk import chunk_document, render_pages
 from policy_rag.ingest.parse import parse_pdf
-from policy_rag.models import Chunk
-from policy_rag.store.factory import create_vector_store
+from policy_rag.models import Chunk, PageText
+from policy_rag.store.factory import create_page_store, create_vector_store
 
 
 def main() -> int:
@@ -28,17 +29,21 @@ def main() -> int:
     total_pages = 0
     numbering: Counter[str] = Counter()
     chunks: list[Chunk] = []
+    pages: list[PageText] = []
     for path in pdf_paths:
         print(f"Parsing {path.name} ...")
         document = parse_pdf(path)
         total_pages += len(document.pages)
         numbering.update(page.page_numbering for page in document.pages)
         chunks.extend(chunk_document(document))
+        pages.extend(render_pages(document))
 
     print(f"Indexing {len(chunks)} chunks into {settings.chroma_dir}/ ...")
     store = create_vector_store(settings)
     store.reset()
     store.add(chunks)
+    create_page_store(settings).save(pages)
+    print(f"Saved full page text to {settings.pages_path}")
 
     _print_stats(len(pdf_paths), total_pages, numbering, chunks, store.count())
     return 0

@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 class Settings:
     raw_data_dir: Path
     chroma_dir: Path
+    pages_path: Path
     collection_name: str
     llm_provider: str
     anthropic_model: str
@@ -23,6 +24,7 @@ def load_settings() -> Settings:
     return Settings(
         raw_data_dir=Path(os.getenv("RAW_DATA_DIR", "data/raw")),
         chroma_dir=Path(os.getenv("CHROMA_DIR", "chroma_db")),
+        pages_path=Path(os.getenv("PAGES_PATH", "data/processed/pages.json")),
         collection_name=os.getenv("COLLECTION_NAME", "policy_chunks"),
         llm_provider=os.getenv("LLM_PROVIDER", "ollama"),
         anthropic_model=os.getenv("ANTHROPIC_MODEL", "claude-opus-5-5"),

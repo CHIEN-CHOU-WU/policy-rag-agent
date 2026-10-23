@@ -15,10 +15,8 @@ from policy_rag.store.base import VectorStore
 
 NOT_FOUND = "I couldn't find this in the provided documents."
 
-SYSTEM_PROMPT = f"""\
-You answer questions about an insurance policy document using only the excerpts provided.
-
-Rules:
+# Shared with the agent, so both modes cite and decline in the same way.
+ANSWER_RULES = f"""\
 - Use only information in the excerpts. Do not add outside knowledge.
 - Cite the page of every fact right after it, using the page attribute of the excerpt \
 the fact came from: [p. 12] for one page, [pp. 25-26] for an excerpt that spans pages.
@@ -27,6 +25,12 @@ not sources. Never cite them, and don't copy them into your answer.
 - If excerpts disagree or only partly answer the question, say what they do and don't cover.
 - If the excerpts do not answer the question, reply exactly: "{NOT_FOUND}"
 - Answer concisely, in plain language."""
+
+SYSTEM_PROMPT = f"""\
+You answer questions about an insurance policy document using only the excerpts provided.
+
+Rules:
+{ANSWER_RULES}"""
 
 # A bracketed citation such as "[p. 9]", "[pp. 25-26]" or "[p. 9, p. 12]".
 _CITATION = re.compile(r"\[(pp?\.[^\]]*)\]")

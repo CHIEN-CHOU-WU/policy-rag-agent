@@ -92,7 +92,7 @@ Run it with:
 
 ```bash
 uv run python eval/run_eval.py                         # uses LLM_PROVIDER from .env
-LLM_PROVIDER=ollama uv run python eval/run_eval.py     # or override per run
+LLM_PROVIDER=anthropic uv run python eval/run_eval.py  # or override per run
 ```
 
 ## Tech stack
@@ -118,19 +118,19 @@ uv sync
 cp .env.example .env
 ```
 
-Choose one model provider in `.env`:
+Choose one model provider in `.env`. Ollama is the default, so it runs for free with no API key:
 
 ```bash
-# Option A — Claude (best quality)
-LLM_PROVIDER=anthropic
-ANTHROPIC_API_KEY=your-key-here
-
-# Option B — local model via Ollama (free, runs offline)
+# Option A — local model via Ollama (default; free, runs offline)
 LLM_PROVIDER=ollama
 OLLAMA_MODEL=qwen3:8b
+
+# Option B — Claude (best quality)
+LLM_PROVIDER=anthropic
+ANTHROPIC_API_KEY=your-key-here
 ```
 
-For Option B, install [Ollama](https://ollama.com) and pull a model that supports tool calling:
+For Option A, install [Ollama](https://ollama.com) and pull a model that supports tool calling:
 
 ```bash
 ollama pull qwen3:8b
@@ -144,7 +144,8 @@ uv run python scripts/download_data.py
 uv run python -m policy_rag.ingest
 
 # Ask a question from the command line
-uv run python -m policy_rag.ask "What does Part B cover?"
+uv run python -m policy_rag.ask "What does Part B cover?"           # RAG: search once, then answer
+uv run python -m policy_rag.ask --agent "How do I add dental coverage?"  # agent: research with tools
 
 # Launch the web app
 uv run streamlit run src/policy_rag/app.py
@@ -189,7 +190,8 @@ policy-rag-agent/
 │   ├── store/
 │   │   ├── base.py           # VectorStore interface (port)
 │   │   ├── chroma_store.py   # Chroma implementation (adapter)
-│   │   └── factory.py        # picks the adapter
+│   │   ├── page_store.py     # full page text for get_page (port + JSON adapter)
+│   │   └── factory.py        # picks the adapters
 │   ├── llm/
 │   │   ├── base.py           # LLMClient interface (port)
 │   │   ├── anthropic_client.py  # Claude adapter
@@ -198,8 +200,9 @@ policy-rag-agent/
 │   │   └── openai_compat_client.py  # Groq / Gemini adapter (planned)
 │   ├── retrieve.py           # search + format excerpts for the model
 │   ├── rag.py                # answer with page citations, checked against sources
-│   ├── ask.py                # `python -m policy_rag.ask` entry point
-│   ├── agent.py              # Claude tool-use loop
+│   ├── tools.py              # search_policy / get_page, shared by agent and MCP server
+│   ├── agent.py              # tool-use agent loop (Claude or Ollama)
+│   ├── ask.py                # `python -m policy_rag.ask [--agent]` entry point
 │   ├── mcp_server.py
 │   └── app.py                # Streamlit UI
 ├── eval/
@@ -214,7 +217,7 @@ policy-rag-agent/
 
 - [x] M1 — Ingest: parse, chunk, and index documents with page metadata
 - [x] M2 — Basic RAG with page citations, behind a pluggable LLM interface (Claude + Ollama)
-- [ ] M3 — Agent with `search_policy` and `get_page` tools
+- [x] M3 — Agent with `search_policy` and `get_page` tools
 - [ ] M4 — MCP server
 - [ ] M5 — Web UI, evaluation results, demo
 - [ ] M6 — Add Groq and Gemini adapters once the Ollama setup is stable; run the same evaluation on every provider and publish the comparison

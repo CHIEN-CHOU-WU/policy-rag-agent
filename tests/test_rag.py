@@ -1,61 +1,12 @@
-from collections.abc import Sequence
-
 import pytest
 
-from policy_rag.llm.base import LLMClient
-from policy_rag.models import Chunk, SearchResult
+from fakes import FakeLLM, FakeStore, make_chunk
+from policy_rag.models import SearchResult
 from policy_rag.rag import NOT_FOUND, SYSTEM_PROMPT, answer_question, cited_pages
 from policy_rag.retrieve import format_context
-from policy_rag.store.base import VectorStore
-
-
-def make_chunk(chunk_id: str, section: str, body: str, page_start: int, page_end: int) -> Chunk:
-    return Chunk(
-        chunk_id=chunk_id,
-        text=f"{section}\n\n{body}",
-        source="handbook.pdf",
-        section_title=section,
-        section_path=section,
-        page_start=page_start,
-        page_end=page_end,
-        pdf_page_start=page_start,
-        pdf_page_end=page_end,
-        page_numbering="printed",
-        content_type="text",
-    )
-
 
 PART_B = make_chunk("c1", "Part B", "Part B covers outpatient care.", 32, 32)
 ENROLLMENT = make_chunk("c2", "Signing up", "You can sign up when you turn 65.", 17, 18)
-
-
-class FakeStore(VectorStore):
-    def __init__(self, chunks: list[Chunk]) -> None:
-        self.chunks = chunks
-
-    def add(self, chunks: Sequence[Chunk]) -> None:
-        raise NotImplementedError
-
-    def search(self, query: str, k: int = 5) -> list[SearchResult]:
-        return [SearchResult(chunk, score=1.0) for chunk in self.chunks[:k]]
-
-    def count(self) -> int:
-        return len(self.chunks)
-
-    def reset(self) -> None:
-        raise NotImplementedError
-
-
-class FakeLLM(LLMClient):
-    """Returns a canned reply and records what it was asked."""
-
-    def __init__(self, reply: str) -> None:
-        self.reply = reply
-        self.calls: list[tuple[str, str]] = []
-
-    def complete(self, system: str, prompt: str) -> str:
-        self.calls.append((system, prompt))
-        return self.reply
 
 
 def test_prompt_contains_each_excerpt_with_its_page() -> None:

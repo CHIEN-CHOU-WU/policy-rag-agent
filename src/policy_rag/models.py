@@ -50,3 +50,14 @@ class SearchResult:
 
     chunk: Chunk
     score: float
+
+
+@dataclass(frozen=True)
+class PageText:
+    """The full, cleaned text of one page, for reading a page in context."""
+
+    source: str
+    page_number: int
+    pdf_page: int
+    page_numbering: PageNumbering
+    text: str

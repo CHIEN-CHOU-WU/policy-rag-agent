@@ -16,6 +16,9 @@ Strategy
 
 Every chunk starts with its section path (e.g. ``Part B > What's covered``) so
 the embedding carries the section's meaning, and records the pages it spans.
+
+``render_pages`` turns the same cleaned element stream into one text per page,
+so reading a whole page shows exactly what the chunks were built from.
 """
 
 import re
@@ -24,7 +27,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from policy_rag.ingest.parse import Page, ParsedDocument, Table, TextLine
-from policy_rag.models import Chunk, ContentType, PageNumbering
+from policy_rag.models import Chunk, ContentType, PageNumbering, PageText
 
 UNTITLED_SECTION = "Untitled section"
 
@@ -61,6 +64,25 @@ def chunk_document(doc: ParsedDocument, config: ChunkerConfig | None = None) -> 
                 )
             )
     return chunks
+
+
+def render_pages(doc: ParsedDocument, config: ChunkerConfig | None = None) -> list[PageText]:
+    """The cleaned text of every page: headings, paragraphs, and Markdown tables in reading order."""
+    config = config or ChunkerConfig()
+    elements = _elements(doc.pages, _body_font_size(doc.pages), config)
+    texts: dict[int, list[str]] = {page.pdf_page: [] for page in doc.pages}
+    for element in elements:
+        texts[element.page.pdf_page].append(element.text)
+    return [
+        PageText(
+            source=doc.source,
+            page_number=page.page_number,
+            pdf_page=page.pdf_page,
+            page_numbering=page.page_numbering,
+            text="\n\n".join(texts[page.pdf_page]),
+        )
+        for page in doc.pages
+    ]
 
 
 # --- Element stream ----------------------------------------------------------
