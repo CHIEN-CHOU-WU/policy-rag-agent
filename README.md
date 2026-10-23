@@ -108,7 +108,7 @@ LLM_PROVIDER=ollama uv run python eval/run_eval.py     # or override per run
 ## Quick start
 
 ```bash
-git clone https://github.com/johnson12440/policy-rag-agent.git
+git clone https://github.com/CHIEN-CHOU-WU/policy-rag-agent.git
 cd policy-rag-agent
 
 # Install dependencies
@@ -177,12 +177,16 @@ policy-rag-agent/
 ├── scripts/
 │   └── download_data.py      # fetch public source PDFs
 ├── src/policy_rag/
+│   ├── config.py             # settings from environment / .env
+│   ├── models.py             # shared data types (Chunk, SearchResult)
 │   ├── ingest/
+│   │   ├── __main__.py       # `python -m policy_rag.ingest` entry point
 │   │   ├── parse.py          # PDF → text + page numbers
 │   │   └── chunk.py          # section-based chunking
 │   ├── store/
 │   │   ├── base.py           # VectorStore interface (port)
-│   │   └── chroma_store.py   # Chroma implementation (adapter)
+│   │   ├── chroma_store.py   # Chroma implementation (adapter)
+│   │   └── factory.py        # picks the adapter
 │   ├── llm/
 │   │   ├── base.py           # LLMClient interface (port)
 │   │   ├── anthropic_client.py  # Claude adapter
@@ -200,7 +204,7 @@ policy-rag-agent/
 
 ## Roadmap
 
-- [ ] M1 — Ingest: parse, chunk, and index documents with page metadata
+- [x] M1 — Ingest: parse, chunk, and index documents with page metadata
 - [ ] M2 — Basic RAG with page citations, behind a pluggable LLM interface (Claude + Ollama)
 - [ ] M3 — Agent with `search_policy` and `get_page` tools
 - [ ] M4 — MCP server

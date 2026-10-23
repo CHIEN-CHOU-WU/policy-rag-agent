@@ -1,0 +1,40 @@
+"""Domain models shared across ingest, storage, and (later) retrieval."""
+
+from dataclasses import dataclass
+from typing import Literal
+
+PageNumbering = Literal["pdf_label", "printed", "physical", "mixed"]
+"""How a page number was determined.
+
+- ``pdf_label``: the PDF's own page labels (``/PageLabels``).
+- ``printed``: the number printed on the page, inferred from header/footer text.
+- ``physical``: the 1-based position of the page in the PDF file.
+- ``mixed``: a chunk spanning pages whose numbers came from different sources.
+"""
+
+ContentType = Literal["text", "table"]
+
+
+@dataclass(frozen=True)
+class Chunk:
+    """A retrievable unit of a source document, with its citation metadata."""
+
+    chunk_id: str
+    text: str
+    source: str
+    section_title: str
+    section_path: str
+    page_start: int
+    page_end: int
+    pdf_page_start: int
+    pdf_page_end: int
+    page_numbering: PageNumbering
+    content_type: ContentType
+
+
+@dataclass(frozen=True)
+class SearchResult:
+    """A chunk returned by a vector search, with its similarity score (higher is closer)."""
+
+    chunk: Chunk
+    score: float
