@@ -143,6 +143,9 @@ Then build the index and run the app:
 uv run python scripts/download_data.py
 uv run python -m policy_rag.ingest
 
+# Ask a question from the command line
+uv run python -m policy_rag.ask "What does Part B cover?"
+
 # Launch the web app
 uv run streamlit run src/policy_rag/app.py
 ```
@@ -191,12 +194,17 @@ policy-rag-agent/
 │   │   ├── base.py           # LLMClient interface (port)
 │   │   ├── anthropic_client.py  # Claude adapter
 │   │   ├── ollama_client.py     # Ollama adapter
+│   │   ├── factory.py           # picks the adapter from LLM_PROVIDER
 │   │   └── openai_compat_client.py  # Groq / Gemini adapter (planned)
-│   ├── retrieve.py
+│   ├── retrieve.py           # search + format excerpts for the model
+│   ├── rag.py                # answer with page citations, checked against sources
+│   ├── ask.py                # `python -m policy_rag.ask` entry point
 │   ├── agent.py              # Claude tool-use loop
 │   ├── mcp_server.py
 │   └── app.py                # Streamlit UI
 ├── eval/
+│   ├── retrieval_questions.yaml  # questions with known answer pages
+│   ├── run_retrieval_eval.py     # hit@k / MRR for retrieval (no LLM)
 │   ├── questions.yaml
 │   └── run_eval.py
 └── tests/
@@ -205,7 +213,7 @@ policy-rag-agent/
 ## Roadmap
 
 - [x] M1 — Ingest: parse, chunk, and index documents with page metadata
-- [ ] M2 — Basic RAG with page citations, behind a pluggable LLM interface (Claude + Ollama)
+- [x] M2 — Basic RAG with page citations, behind a pluggable LLM interface (Claude + Ollama)
 - [ ] M3 — Agent with `search_policy` and `get_page` tools
 - [ ] M4 — MCP server
 - [ ] M5 — Web UI, evaluation results, demo

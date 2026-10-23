@@ -117,7 +117,7 @@ def test_long_section_falls_back_to_length_split(chunks: list[Chunk]) -> None:
 def test_split_pieces_overlap_on_whole_sentences(chunks: list[Chunk]) -> None:
     appeals = by_section(chunks, "Appeals process")
     for previous, current in zip(appeals, appeals[1:]):
-        body = current.text.removeprefix(current.section_path).lstrip()
+        body = current.body
         first_sentence = body.split(". ")[0] + "."
         assert first_sentence in previous.text, "next piece should start with the previous tail"
         assert len(first_sentence) <= CONFIG.overlap_chars
@@ -132,4 +132,4 @@ def test_chunk_ids_are_unique_and_deterministic(handbook_pdf: Path, chunks: list
 
 def test_no_chunk_is_empty(chunks: list[Chunk]) -> None:
     for chunk in chunks:
-        assert chunk.text.removeprefix(chunk.section_path).strip()
+        assert chunk.body.strip()

@@ -31,6 +31,18 @@ class Chunk:
     page_numbering: PageNumbering
     content_type: ContentType
 
+    @property
+    def body(self) -> str:
+        """The chunk text without the section-path header it starts with."""
+        return self.text.removeprefix(self.section_path).lstrip()
+
+    @property
+    def page_label(self) -> str:
+        """The citation page, e.g. ``"9"``, or ``"25-26"`` for a chunk spanning pages."""
+        if self.page_start == self.page_end:
+            return str(self.page_start)
+        return f"{self.page_start}-{self.page_end}"
+
 
 @dataclass(frozen=True)
 class SearchResult:

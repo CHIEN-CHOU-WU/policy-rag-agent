@@ -1,0 +1,39 @@
+# Retrieval evaluation for "Medicare & You 2027".
+#
+# Each question lists the printed page(s) where the handbook answers it. A
+# retrieved chunk counts as a hit when its page range includes any of them.
+# Pages were looked up in the PDF itself, not taken from search results.
+# Several questions are deliberately worded differently from the handbook
+# ("flu shot" vs. "flu vaccine", "travel abroad" vs. "outside the U.S.").
+
+questions:
+  - question: What does Part B cover?
+    pages: [9, 32]
+  - question: Does Medicare cover dental care?
+    pages: [58]
+  - question: When is my Initial Enrollment Period for Part A and Part B?
+    pages: [17]
+  - question: Will I pay a penalty if I sign up for Part B late?
+    pages: [23]
+  - question: How often does Medicare cover a flu shot?
+    pages: [44]
+  - question: Am I covered by Medicare when I travel abroad?
+    pages: [12, 79]
+  - question: Do I need a referral to see a specialist?
+    pages: [11]  # comparison table
+  - question: When can I join or switch a Medicare drug plan?
+    pages: [84]
+  - question: Can I change my Medicare Advantage Plan between January and March?
+    pages: [75]  # enrollment periods table
+  - question: What are Medicare Savings Programs?
+    pages: [95]
+  - question: Does Medicare pay for long-term care in a nursing home?
+    pages: [58, 59]
+  - question: What happens at the Welcome to Medicare preventive visit?
+    pages: [57]
+  - question: Does Medicare cover ambulance rides?
+    pages: [34]
+  - question: How do I appeal a coverage decision?
+    pages: [102]
+  - question: Where can I get hospice care?
+    pages: [29]
