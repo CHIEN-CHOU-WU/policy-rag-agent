@@ -45,7 +45,7 @@ Source documents are public U.S. government publications (e.g. *Medicare & You*)
                             ▼              ▼
                 ┌──────────────────┐  ┌──────────────────┐
                 │ Agent            │  │ MCP server       │
-                │ (tool-use loop)  │  │ (FastMCP)        │
+                │ (tool-use loop)  │  │ (MCPServer)      │
                 └───┬─────────┬────┘  └────────┬─────────┘
                     │         ▼                ▼
                     │  Streamlit web app  Claude Desktop / Code,
@@ -102,7 +102,7 @@ LLM_PROVIDER=anthropic uv run python eval/run_eval.py  # or override per run
 - **Ollama** for running open-source models locally during development
 - **PyMuPDF** for PDF parsing
 - **Chroma** as the vector store
-- **MCP Python SDK (FastMCP)** for the MCP server
+- **MCP Python SDK (`MCPServer`)** for the MCP server
 - **Streamlit** for the web UI
 
 ## Quick start
@@ -153,13 +153,15 @@ uv run streamlit run src/policy_rag/app.py
 
 ## Using it as an MCP server
 
-**Claude Code:**
+The MCP server exposes the same `search_policy` and `get_page` tools the agent uses. Build the index first (`uv run python -m policy_rag.ingest`).
+
+**Claude Code** — the repo ships a project `.mcp.json`, so opening this folder in Claude Code offers to enable the `policy-search` server. To use it from any other folder instead:
 
 ```bash
 claude mcp add policy-search -- uv run --directory /path/to/policy-rag-agent python -m policy_rag.mcp_server
 ```
 
-**Claude Desktop** — add to `claude_desktop_config.json`:
+**Claude Desktop** — add to `claude_desktop_config.json` (if Claude Desktop can't find `uv`, use its full path from `which uv`):
 
 ```json
 {
@@ -178,6 +180,7 @@ Then ask Claude something like *"Using the policy search tool, what does Medicar
 
 ```
 policy-rag-agent/
+├── .mcp.json                 # registers the MCP server with Claude Code
 ├── scripts/
 │   └── download_data.py      # fetch public source PDFs
 ├── src/policy_rag/
@@ -203,7 +206,7 @@ policy-rag-agent/
 │   ├── tools.py              # search_policy / get_page, shared by agent and MCP server
 │   ├── agent.py              # tool-use agent loop (Claude or Ollama)
 │   ├── ask.py                # `python -m policy_rag.ask [--agent]` entry point
-│   ├── mcp_server.py
+│   ├── mcp_server.py         # MCP server exposing the tools
 │   └── app.py                # Streamlit UI
 ├── eval/
 │   ├── retrieval_questions.yaml  # questions with known answer pages
@@ -218,7 +221,7 @@ policy-rag-agent/
 - [x] M1 — Ingest: parse, chunk, and index documents with page metadata
 - [x] M2 — Basic RAG with page citations, behind a pluggable LLM interface (Claude + Ollama)
 - [x] M3 — Agent with `search_policy` and `get_page` tools
-- [ ] M4 — MCP server
+- [x] M4 — MCP server
 - [ ] M5 — Web UI, evaluation results, demo
 - [ ] M6 — Add Groq and Gemini adapters once the Ollama setup is stable; run the same evaluation on every provider and publish the comparison
 

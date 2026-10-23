@@ -1,9 +1,12 @@
 """The tools an agent can use to research the policy documents.
 
 ``PolicyTools`` holds the plain functions, shared by the agent (M3) and the
-MCP server (M4). ``TOOL_SPECS`` and ``run_tool`` adapt them for a model:
+MCP server (M4). ``TOOL_SPECS`` and ``run_tool`` adapt them for the agent:
 they describe each tool, execute a call, and return text the model can read,
 plus the pages it was shown, so citations can be checked afterwards.
+
+The ``format_*`` functions and messages are shared with the MCP server, so a
+model sees exactly the same text whichever way it reaches the tools.
 """
 
 from dataclasses import dataclass, field
@@ -16,6 +19,7 @@ from policy_rag.store.base import VectorStore
 from policy_rag.store.page_store import PageStore
 
 SEARCH_RESULTS = 5
+NO_RESULTS = "No excerpts matched this search."
 
 
 @dataclass(frozen=True)
@@ -30,6 +34,21 @@ class PolicyTools:
     def get_page(self, page_number: int) -> list[PageText]:
         """The full text of a page, by the page number printed in the document."""
         return self.pages.get(page_number)
+
+
+def format_search_results(results: list[SearchResult]) -> str:
+    return format_context(results) if results else NO_RESULTS
+
+
+def format_pages(pages: list[PageText]) -> str:
+    return "\n\n".join(
+        f'<page number="{page.page_number}" source="{page.source}">\n{page.text}\n</page>'
+        for page in pages
+    )
+
+
+def no_page_message(page_number: int) -> str:
+    return f"There is no page {page_number}."
 
 
 TOOL_SPECS = [
@@ -101,14 +120,12 @@ def _search(tools: PolicyTools, call: ToolCall) -> ToolOutcome:
         return _error(call, "search_policy needs a non-empty 'query' string.")
 
     results = tools.search_policy(query)
-    if not results:
-        return ToolOutcome(_result(call, "No excerpts matched this search."))
     pages_seen: dict[int, str] = {}
     for result in results:
         chunk = result.chunk
         for page in range(chunk.page_start, chunk.page_end + 1):
             pages_seen.setdefault(page, chunk.section_title)
-    return ToolOutcome(_result(call, format_context(results)), pages_seen)
+    return ToolOutcome(_result(call, format_search_results(results)), pages_seen)
 
 
 def _read_page(tools: PolicyTools, call: ToolCall) -> ToolOutcome:
@@ -118,12 +135,8 @@ def _read_page(tools: PolicyTools, call: ToolCall) -> ToolOutcome:
 
     pages = tools.get_page(page_number)
     if not pages:
-        return _error(call, f"There is no page {page_number}.")
-    text = "\n\n".join(
-        f'<page number="{page.page_number}" source="{page.source}">\n{page.text}\n</page>'
-        for page in pages
-    )
-    return ToolOutcome(_result(call, text), {page_number: "Full page"})
+        return _error(call, no_page_message(page_number))
+    return ToolOutcome(_result(call, format_pages(pages)), {page_number: "Full page"})
 
 
 def _as_int(value: Any) -> int | None:
