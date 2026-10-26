@@ -14,3 +14,6 @@ __pycache__/
 data/raw/
 data/processed/
 chroma_db/
+
+# Personal marketing copy for the Upwork listing (kept local)
+docs/portfolio/upwork-listing.md

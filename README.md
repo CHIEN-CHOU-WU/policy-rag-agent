@@ -78,6 +78,8 @@ This also makes it possible to run the same evaluation across models and compare
 
 Measured on *Medicare & You 2027* with 18 questions (`eval/questions.yaml`): 15 answered by the handbook, each with the pages that hold the answer and a reference answer written from them, plus 3 the handbook doesn't cover, which must be declined.
 
+![Answer correctness per model, RAG vs agent: qwen3.8-27b scores 100% in both modes](docs/portfolio/06-evaluation.png)
+
 | Answering model | Mode | Answer correctness | Citation accuracy | Unsupported citations |
 |---|---|---|---|---|
 | qwen3:8b (Ollama, local) | RAG | 78% (14/18) | 100% | 6% |

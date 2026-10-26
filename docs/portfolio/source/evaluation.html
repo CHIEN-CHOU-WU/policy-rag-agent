@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1600">
+<title>Evaluation results</title>
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; margin: 0; }
+  body {
+    width: 1600px; height: 1000px; overflow: hidden;
+    background: #fcfcfb; color: #0b0b0b;
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  header { position: absolute; left: 80px; right: 70px; top: 56px; }
+  h1 { font-size: 46px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.15; }
+  .sub { margin-top: 14px; font-size: 30px; color: #52514e; }
+  .legend { display: flex; gap: 40px; margin-top: 26px; font-size: 28px; color: #52514e; }
+  .key { display: inline-flex; align-items: center; gap: 12px; }
+  .swatch { width: 26px; height: 26px; border-radius: 6px; }
+  svg { position: absolute; left: 0; top: 0; }
+  .tick { font-size: 26px; fill: #898781; font-variant-numeric: tabular-nums; }
+  .value { font-size: 30px; fill: #0b0b0b; }
+  .model { font-size: 32px; font-weight: 600; fill: #0b0b0b; }
+  .provider { font-size: 26px; fill: #52514e; }
+  footer { position: absolute; left: 80px; bottom: 40px; font-size: 24px; color: #898781; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Free models reach 100% — and the agent isn't always better than RAG</h1>
+  <p class="sub">Answer correctness on the Medicare &amp; You 2027 handbook</p>
+  <div class="legend"><span class="key"><span class="swatch" style="background:#2a78d6"></span>RAG</span><span class="key"><span class="swatch" style="background:#eb6834"></span>Agent</span></div>
+</header>
+<svg viewBox="0 0 1600 1000" width="1600" height="1000"><line x1="150" x2="1530" y1="780" y2="780" stroke="#c3c2b7" stroke-width="2"/><text class="tick" x="130" y="789" text-anchor="end">0%</text><line x1="150" x2="1530" y1="667.5" y2="667.5" stroke="#e1e0d9" stroke-width="2"/><text class="tick" x="130" y="676.5" text-anchor="end">25%</text><line x1="150" x2="1530" y1="555.0" y2="555.0" stroke="#e1e0d9" stroke-width="2"/><text class="tick" x="130" y="564.0" text-anchor="end">50%</text><line x1="150" x2="1530" y1="442.5" y2="442.5" stroke="#e1e0d9" stroke-width="2"/><text class="tick" x="130" y="451.5" text-anchor="end">75%</text><line x1="150" x2="1530" y1="330.0" y2="330.0" stroke="#e1e0d9" stroke-width="2"/><text class="tick" x="130" y="339.0" text-anchor="end">100%</text><path d="M238.5,780 V438.0 Q238.5,430.0 246.5,430.0 H310.5 Q318.5,430.0 318.5,438.0 V780 Z" fill="#2a78d6"><title>qwen3:8b RAG: 78%</title></path><text class="value" x="278.5" y="414.0" text-anchor="middle" font-weight="500">78%</text><path d="M326.5,780 V363.0 Q326.5,355.0 334.5,355.0 H398.5 Q406.5,355.0 406.5,363.0 V780 Z" fill="#eb6834"><title>qwen3:8b Agent: 94%</title></path><text class="value" x="366.5" y="339.0" text-anchor="middle" font-weight="500">94%</text><text class="model" x="322.5" y="832" text-anchor="middle">qwen3:8b</text><path d="M583.5,780 V338.0 Q583.5,330.0 591.5,330.0 H655.5 Q663.5,330.0 663.5,338.0 V780 Z" fill="#2a78d6"><title>qwen3.6:35b RAG: 100%</title></path><text class="value" x="623.5" y="314.0" text-anchor="middle" font-weight="700">100%</text><path d="M671.5,780 V388.0 Q671.5,380.0 679.5,380.0 H743.5 Q751.5,380.0 751.5,388.0 V780 Z" fill="#eb6834"><title>qwen3.6:35b Agent: 89%</title></path><text class="value" x="711.5" y="364.0" text-anchor="middle" font-weight="500">89%</text><text class="model" x="667.5" y="832" text-anchor="middle">qwen3.6:35b</text><path d="M928.5,780 V413.0 Q928.5,405.0 936.5,405.0 H1000.5 Q1008.5,405.0 1008.5,413.0 V780 Z" fill="#2a78d6"><title>openai/gpt-oss-120b RAG: 83%</title></path><text class="value" x="968.5" y="389.0" text-anchor="middle" font-weight="500">83%</text><path d="M1016.5,780 V388.0 Q1016.5,380.0 1024.5,380.0 H1088.5 Q1096.5,380.0 1096.5,388.0 V780 Z" fill="#eb6834"><title>openai/gpt-oss-120b Agent: 89%</title></path><text class="value" x="1056.5" y="364.0" text-anchor="middle" font-weight="500">89%</text><text class="model" x="1012.5" y="832" text-anchor="middle">gpt-oss-120b</text><path d="M1273.5,780 V338.0 Q1273.5,330.0 1281.5,330.0 H1345.5 Q1353.5,330.0 1353.5,338.0 V780 Z" fill="#2a78d6"><title>qwen/qwen3.8-27b RAG: 100%</title></path><text class="value" x="1313.5" y="314.0" text-anchor="middle" font-weight="700">100%</text><path d="M1361.5,780 V338.0 Q1361.5,330.0 1369.5,330.0 H1433.5 Q1441.5,330.0 1441.5,338.0 V780 Z" fill="#eb6834"><title>qwen/qwen3.8-27b Agent: 100%</title></path><text class="value" x="1401.5" y="314.0" text-anchor="middle" font-weight="700">100%</text><text class="model" x="1357.5" y="832" text-anchor="middle">qwen3.8-27b</text><path d="M180.0,850 V862 H810.0 V850" fill="none" stroke="#c3c2b7" stroke-width="2"/><text class="provider" x="495.0" y="902" text-anchor="middle">Local · Ollama</text><path d="M870.0,850 V862 H1500.0 V850" fill="none" stroke="#c3c2b7" stroke-width="2"/><text class="provider" x="1185.0" y="902" text-anchor="middle">Groq free tier</text></svg>
+<footer>Judged by gemini-3.8-flash on 18 questions</footer>
+</body>
+</html>

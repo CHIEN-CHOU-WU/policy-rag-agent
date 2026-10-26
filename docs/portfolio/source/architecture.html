@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Architecture</title>
+<style>
+  :root {
+    --ink: #0f172a;
+    --muted: #64748b;
+    --line: #94a3b8;
+    --border: #e2e8f0;
+    --bg: #f8fafc;
+    --data: #2563eb;
+    --tools: #7c3aed;
+    --agent: #0d9488;
+    --mcp: #ea580c;
+    --llm: #475569;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1600px; height: 1200px; background: var(--bg); }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+  }
+  #canvas { position: relative; width: 1600px; height: 1200px; overflow: hidden; }
+
+  .header { position: absolute; left: 80px; top: 56px; }
+  .header h1 { font-size: 40px; font-weight: 700; letter-spacing: -0.02em; }
+  .header p { margin-top: 8px; font-size: 20px; color: var(--muted); }
+
+  svg.wires { position: absolute; inset: 0; }
+  .wire { fill: none; stroke: var(--line); stroke-width: 2.5; stroke-linejoin: round; }
+
+  .box {
+    position: absolute;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    text-align: center;
+    background: #fff;
+    border: 1.5px solid var(--border);
+    border-top: 5px solid var(--accent);
+    border-radius: 14px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 6px 18px rgba(15, 23, 42, 0.06);
+  }
+  .box .t { font-size: 26px; font-weight: 650; letter-spacing: -0.01em; }
+  .box .s { margin-top: 6px; font-size: 18px; color: var(--muted); }
+  .chips { display: flex; gap: 12px; margin-top: 12px; }
+  .chip {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 17px;
+    padding: 5px 12px;
+    border-radius: 8px;
+    background: #f5f3ff;
+    color: var(--tools);
+  }
+  .adapter .t { font-size: 22px; }
+  .adapter .s { font-size: 16px; margin-top: 4px; }
+
+  .note {
+    position: absolute;
+    display: flex; align-items: center; gap: 14px;
+    padding: 0 24px;
+    border: 1.5px dashed #a7d8d2;
+    border-radius: 14px;
+    background: #f0fdfa;
+    font-size: 19px; color: #115e59;
+  }
+  .note .check {
+    flex: none; width: 30px; height: 30px; border-radius: 50%;
+    background: var(--agent); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; font-weight: 700;
+  }
+</style>
+</head>
+<body>
+<div id="canvas">
+  <div class="header">
+    <h1>Architecture</h1>
+    <p>Retrieval-augmented agent with page-cited answers</p>
+  </div>
+
+  <svg class="wires" width="1600" height="1200" viewBox="0 0 1600 1200">
+    <defs>
+      <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0,0 L10,5 L0,10 z" fill="#94a3b8"/>
+      </marker>
+    </defs>
+    <!-- PDF -> Ingest -->
+    <path class="wire" d="M400,238 H556" marker-end="url(#arrow)"/>
+    <!-- Ingest -> Vector store -->
+    <path class="wire" d="M800,296 V366" marker-end="url(#arrow)"/>
+    <!-- Vector store -> Tools -->
+    <path class="wire" d="M800,470 V536" marker-end="url(#arrow)"/>
+    <!-- Tools -> Agent / MCP server -->
+    <path class="wire" d="M800,656 V693"/>
+    <path class="wire" d="M560,693 H1040"/>
+    <path class="wire" d="M560,693 V726" marker-end="url(#arrow)"/>
+    <path class="wire" d="M1040,693 V726" marker-end="url(#arrow)"/>
+    <!-- Agent -> Streamlit, MCP server -> clients -->
+    <path class="wire" d="M400,780 H324" marker-end="url(#arrow)"/>
+    <path class="wire" d="M1200,780 H1276" marker-end="url(#arrow)"/>
+    <!-- Agent -> LLM client -->
+    <path class="wire" d="M560,830 V896" marker-end="url(#arrow)"/>
+    <!-- LLM client -> adapters -->
+    <path class="wire" d="M560,984 V1017"/>
+    <path class="wire" d="M275,1017 H845"/>
+    <path class="wire" d="M275,1017 V1046" marker-end="url(#arrow)"/>
+    <path class="wire" d="M465,1017 V1046" marker-end="url(#arrow)"/>
+    <path class="wire" d="M655,1017 V1046" marker-end="url(#arrow)"/>
+    <path class="wire" d="M845,1017 V1046" marker-end="url(#arrow)"/>
+  </svg>
+
+  <div class="box" style="--accent: var(--data); left:120px; top:190px; width:280px; height:96px;">
+    <div class="t">PDF documents</div>
+    <div class="s">Medicare &amp; You 2027</div>
+  </div>
+  <div class="box" style="--accent: var(--data); left:560px; top:180px; width:480px; height:116px;">
+    <div class="t">Ingest</div>
+    <div class="s">parse → chunk by section · page metadata kept</div>
+  </div>
+  <div class="box" style="--accent: var(--data); left:620px; top:370px; width:360px; height:100px;">
+    <div class="t">Vector store</div>
+    <div class="s">Chroma · swappable</div>
+  </div>
+  <div class="box" style="--accent: var(--tools); left:560px; top:540px; width:480px; height:116px;">
+    <div class="t">Tools</div>
+    <div class="chips"><span class="chip">search_policy</span><span class="chip">get_page</span></div>
+  </div>
+
+  <div class="box" style="--accent: var(--agent); left:80px; top:730px; width:240px; height:100px;">
+    <div class="t">Streamlit</div>
+    <div class="s">web app</div>
+  </div>
+  <div class="box" style="--accent: var(--agent); left:400px; top:730px; width:320px; height:100px;">
+    <div class="t">Agent</div>
+    <div class="s">tool-use loop</div>
+  </div>
+  <div class="box" style="--accent: var(--mcp); left:880px; top:730px; width:320px; height:100px;">
+    <div class="t">MCP server</div>
+    <div class="s">MCPServer</div>
+  </div>
+  <div class="box" style="--accent: var(--mcp); left:1280px; top:730px; width:240px; height:100px;">
+    <div class="t">MCP clients</div>
+    <div class="s">Claude Desktop / Code</div>
+  </div>
+
+  <div class="box" style="--accent: var(--llm); left:380px; top:900px; width:360px; height:84px;">
+    <div class="t">LLM client</div>
+    <div class="s">port</div>
+  </div>
+  <div class="box adapter" style="--accent: var(--llm); left:190px; top:1050px; width:170px; height:86px;">
+    <div class="t">Claude</div><div class="s">API</div>
+  </div>
+  <div class="box adapter" style="--accent: var(--llm); left:380px; top:1050px; width:170px; height:86px;">
+    <div class="t">Ollama</div><div class="s">local</div>
+  </div>
+  <div class="box adapter" style="--accent: var(--llm); left:570px; top:1050px; width:170px; height:86px;">
+    <div class="t">Groq</div><div class="s">cloud</div>
+  </div>
+  <div class="box adapter" style="--accent: var(--llm); left:760px; top:1050px; width:170px; height:86px;">
+    <div class="t">Gemini</div><div class="s">cloud</div>
+  </div>
+
+  <div class="note" style="left:1000px; top:1050px; width:520px; height:86px;">
+    <span class="check">✓</span>
+    <span>Citations checked against retrieved pages</span>
+  </div>
+</div>
+</body>
+</html>

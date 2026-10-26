@@ -12,19 +12,16 @@ index built (`uv run python -m policy_rag.ingest`).
 """
 
 import io
-import subprocess
 import sys
 import time
-import urllib.request
-from pathlib import Path
 
 from PIL import Image
 from playwright.sync_api import Page, sync_playwright
 
-ROOT = Path(__file__).resolve().parent.parent
+from app_server import ROOT, running_app
+
 OUTPUT = ROOT / "docs" / "demo.gif"
 PORT = 8599
-URL = f"http://localhost:{PORT}"
 QUESTION = "What's the penalty if I sign up for Part B late?"
 
 VIEWPORT = {"width": 1100, "height": 760}
@@ -46,41 +43,18 @@ class Recorder:
 
 
 def main() -> int:
-    server = subprocess.Popen(
-        [sys.executable, "-m", "streamlit", "run", "src/policy_rag/app.py",
-         "--server.headless", "true", "--server.port", str(PORT), "--theme.base", "light"],
-        cwd=ROOT,
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
-    )
-    try:
-        _wait_for_server()
-        frames = _record()
-    finally:
-        server.terminate()
-        server.wait()
-
+    with running_app(PORT) as url:
+        frames = _record(url)
     _save_gif(frames)
     print(f"Saved {OUTPUT.relative_to(ROOT)} ({len(frames)} frames, {OUTPUT.stat().st_size / 1e6:.1f} MB)")
     return 0
 
 
-def _wait_for_server(timeout: float = 60) -> None:
-    deadline = time.time() + timeout
-    while time.time() < deadline:
-        try:
-            urllib.request.urlopen(f"{URL}/_stcore/health", timeout=2)
-            return
-        except OSError:
-            time.sleep(0.5)
-    raise RuntimeError(f"Streamlit did not start on {URL}")
-
-
-def _record() -> list[tuple[Image.Image, int]]:
+def _record(url: str) -> list[tuple[Image.Image, int]]:
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch()
         page = browser.new_page(viewport=VIEWPORT)
-        page.goto(URL)
+        page.goto(url)
         page.get_by_text("Try one of these").wait_for()
         recorder = Recorder(page)
         recorder.capture(1800)
