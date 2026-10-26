@@ -98,6 +98,12 @@ def test_declining_an_answerable_question_is_wrong_without_asking_the_judge() ->
     assert judge.calls == []
 
 
+def test_declining_with_an_explanation_still_counts_as_declining() -> None:
+    explained = f"{NOT_FOUND}\n\nThe handbook is about Medicare, not passports."
+    [result] = score([attempt(PASSPORT, explained)], FakeLLM(""))
+    assert result.correct
+
+
 def test_unanswerable_questions_must_be_declined() -> None:
     declined, made_up = score(
         [attempt(PASSPORT, NOT_FOUND), attempt(PASSPORT, "Visit travel.state.gov.")], FakeLLM("")

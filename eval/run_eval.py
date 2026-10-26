@@ -18,7 +18,7 @@ identical answers.
     uv run python eval/run_eval.py --judge ollama             # local judge (qwen3.6:35b)
     uv run python eval/run_eval.py --rejudge --judge gemini   # grade saved answers again
     uv run python eval/run_eval.py --mode agent               # one mode
-    LLM_PROVIDER=gemini uv run python eval/run_eval.py        # evaluate another model
+    LLM_PROVIDER=groq uv run python eval/run_eval.py          # evaluate another model
 """
 
 import argparse
@@ -186,6 +186,7 @@ def _model_name(settings: Settings) -> str:
     return {
         "ollama": settings.ollama_model,
         "gemini": settings.gemini_model,
+        "groq": settings.groq_model,
         "anthropic": settings.anthropic_model,
     }[settings.llm_provider]
 

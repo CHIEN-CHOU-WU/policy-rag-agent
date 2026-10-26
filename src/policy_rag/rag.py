@@ -33,7 +33,9 @@ Rules:
 {ANSWER_RULES}"""
 
 # A bracketed citation such as "[p. 9]", "[pp. 25-26]" or "[p. 9, p. 12]".
-_CITATION = re.compile(r"\[(pp?\.[^\]]*)\]")
+# Full-width brackets ("【p. 9】") are accepted too: some models (gpt-oss) write
+# them even when asked for square brackets. The pages are checked all the same.
+_CITATION = re.compile(r"[\[【](pp?\.[^\]】]*)[\]】]")
 _PAGE_OR_RANGE = re.compile(r"(\d+)(?:\s*[-–]\s*(\d+))?")
 
 

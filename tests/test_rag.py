@@ -79,6 +79,7 @@ def test_no_retrieved_excerpts_means_no_model_call() -> None:
         ("En dash [pp. 25–27].", [25, 26, 27]),
         ("Listed [p. 9, p. 12].", [9, 12]),
         ("Repeated [p. 9] [p. 9].", [9]),
+        ("Full-width brackets【p. 58】【pp. 66-67】.", [58, 66, 67]),
         ("No citation, and a bracket [note] or year 2027.", []),
     ],
 )

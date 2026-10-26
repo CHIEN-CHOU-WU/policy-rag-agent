@@ -20,6 +20,9 @@ class Settings:
     gemini_api_key: str
     gemini_model: str
     gemini_rpm: int
+    groq_api_key: str
+    groq_model: str
+    groq_rpm: int
 
 
 def load_settings() -> Settings:
@@ -37,4 +40,8 @@ def load_settings() -> Settings:
         gemini_model=os.getenv("GEMINI_MODEL", "gemini-3.5-flash"),
         # The free tier allows 5 requests per minute per model.
         gemini_rpm=int(os.getenv("GEMINI_RPM", "5")),
+        groq_api_key=os.getenv("GROQ_API_KEY", ""),
+        groq_model=os.getenv("GROQ_MODEL", "openai/gpt-oss-120b"),
+        # The free tier allows 30 requests per minute (and 8,000 tokens per minute).
+        groq_rpm=int(os.getenv("GROQ_RPM", "30")),
     )

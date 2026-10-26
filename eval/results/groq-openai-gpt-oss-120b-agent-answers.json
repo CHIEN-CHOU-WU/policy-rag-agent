@@ -1,0 +1,188 @@
+{
+  "model": "openai/gpt-oss-120b",
+  "answers": [
+    {
+      "question": "What does Part B cover?",
+      "answer": "Part B (Medical Insurance) helps pay for medically necessary doctor’s services, outpatient care, some home‑health services, durable medical equipment, mental‑health services, limited outpatient prescription drugs and other medical services. It also covers many preventive services. [pp. 32]",
+      "cited_pages": [
+        32
+      ],
+      "unsupported_pages": [],
+      "seconds": 3.0471777920611203,
+      "tool_calls": 1
+    },
+    {
+      "question": "Does Medicare cover dental care?",
+      "answer": "Medicare’s standard (Original) coverage does **not** include routine dental care—such as cleanings, fillings, extractions, or dentures. It only pays for a few dental services that are directly tied to other covered medical procedures (e.g., certain dental work needed for a heart‑valve surgery or organ transplant)【p. 58】.  \n\nIf you enroll in a Medicare Advantage (Part C) plan, many of those private‑company plans add extra benefits, and they often **do** include dental coverage【p. 10】.",
+      "cited_pages": [
+        10,
+        58
+      ],
+      "unsupported_pages": [],
+      "seconds": 3.8696057917550206,
+      "tool_calls": 1
+    },
+    {
+      "question": "When is my Initial Enrollment Period for Part A and Part B?",
+      "answer": "Your Initial Enrollment Period (IEP) for Medicare Part A and Part B is a 7‑month window that starts **3 months before the month you turn 65** and ends **3 months after the month you turn 65**.  \n\n* If your birthday falls on the first day of the month, the IEP begins **4 months before** the month you turn 65, includes your birthday month, and ends **2 months after** that month.  \n\nDuring the first three months of the IEP, coverage generally begins the first day of your birthday month (or the prior month if your birthday is the first day). If you enroll in the month you turn 65 or during the last three months of the IEP, coverage starts the first day of the month after you sign up.  \n\nSource: policy excerpt describing the Initial Enrollment Period [p. 17].",
+      "cited_pages": [
+        17
+      ],
+      "unsupported_pages": [],
+      "seconds": 3.9727219166234136,
+      "tool_calls": 1
+    },
+    {
+      "question": "Will I pay a penalty if I sign up for Part B late?",
+      "answer": "Yes. If you don’t enroll in Part B when you’re first eligible, you can be charged a late‑enrollment penalty. Your monthly Part B premium may increase by **10 % for each full 12‑month period** you were eligible for Part B but did not sign up. The penalty is added to your regular Part B premium for as long as you have Part B coverage. (You may avoid the penalty if you enroll during a Special Enrollment Period or qualify for a Medicare Savings Program.) [p. 23]",
+      "cited_pages": [
+        23
+      ],
+      "unsupported_pages": [],
+      "seconds": 3.8555753328837454,
+      "tool_calls": 1
+    },
+    {
+      "question": "How often does Medicare cover a flu shot?",
+      "answer": "Medicare covers a flu vaccine **once per flu season** — you receive one flu shot each season at no cost if your provider accepts assignment. [p. 44]",
+      "cited_pages": [
+        44
+      ],
+      "unsupported_pages": [],
+      "seconds": 7.204634124878794,
+      "tool_calls": 1
+    },
+    {
+      "question": "Am I covered by Medicare when I travel abroad?",
+      "answer": "Medicare does **not** normally pay for health care you receive while you are outside the United States. Original Medicare (Part A and Part B) generally doesn’t cover medical care abroad, though you could purchase a Medicare Supplement (Medigap) policy that provides emergency‑care coverage overseas, and some Medicare Advantage (Part C) plans may include an extra benefit for emergency or urgent services abroad. There are a few narrow exceptions—for example, Medicare may cover medically necessary ambulance transport to a foreign hospital when you are admitted for covered inpatient services, with the usual 20 % coinsurance and Part B deductible applying【p. 55】.  \n\nSo, in most cases you are **not** covered by Medicare when you travel abroad, unless you have a supplemental or Medicare Advantage plan that specifically adds that benefit.",
+      "cited_pages": [
+        55
+      ],
+      "unsupported_pages": [],
+      "seconds": 8.917080915998667,
+      "tool_calls": 1
+    },
+    {
+      "question": "Do I need a referral to see a specialist?",
+      "answer": "Yes. Your plan requires a written order (referral) from your primary‑care doctor before you see a specialist; without that referral the plan may not pay for the specialist’s services. [p. 122]",
+      "cited_pages": [
+        122
+      ],
+      "unsupported_pages": [],
+      "seconds": 12.364253833889961,
+      "tool_calls": 1
+    },
+    {
+      "question": "When can I join or switch a Medicare drug plan?",
+      "answer": "You can join or switch a Medicare drug plan only during the enrollment windows that Medicare sets:\n\n* **Initial Enrollment Period** – when you first become eligible for Medicare, you may join a drug plan. [p. 84]  \n* **Open Enrollment Period** – each year from **October 15 through December 7**. Any change you request by Dec 7 takes effect on Jan 1 of the following year. [p. 84][p. 75]  \n* **Medicare Advantage Open Enrollment Period** – if you are already in a Medicare Advantage plan (with or without drug coverage), you may switch to a different Medicare Advantage plan or drop it and join a separate Medicare drug plan **January 1 through March 31**. [p. 84][p. 75]  \n* **Special Enrollment Periods** – you may also join or switch mid‑year if you experience a qualifying life event (e.g., move, loss of other coverage, enrollment in Extra Help, etc.). [p. 84]  \n* **General Enrollment Period** – if you enroll in Part B during the Jan 1 – Mar 31 window, you have two months after that enrollment to join a Medicare drug plan. [p. 84]  \n\nOutside of these periods you generally must stay in your current plan for the full year.",
+      "cited_pages": [
+        75,
+        84
+      ],
+      "unsupported_pages": [],
+      "seconds": 13.549187667202204,
+      "tool_calls": 1
+    },
+    {
+      "question": "Can I change my Medicare Advantage Plan between January and March?",
+      "answer": "Yes. If you are already enrolled in a Medicare Advantage Plan (with or without drug coverage), you may change to a different Medicare Advantage Plan—or drop the plan and return to Original Medicare—during the **Medicare Advantage Open Enrollment Period, which runs from January 1 through March 31**. Any change you make will become effective the first day of the month after the plan receives your request【p. 75】.",
+      "cited_pages": [
+        75
+      ],
+      "unsupported_pages": [],
+      "seconds": 22.571453583892435,
+      "tool_calls": 1
+    },
+    {
+      "question": "What are Medicare Savings Programs?",
+      "answer": "Medicare Savings Programs are state‑run assistance programs for people with limited income and resources that help pay some of the costs of Medicare.  They can cover premiums, deductibles, coinsurance and copayments, and they are not available in U.S. territories.  There are four separate programs:\n\n1. **Qualified Medicare Beneficiary (QMB)** – pays Part A premiums (if not premium‑free) and Part B premiums, and also blocks billing for Medicare deductibles, coinsurance and copayments.  \n2. **Specified Low‑Income Medicare Beneficiary (SLMB)** – helps pay the Part B premium only.  \n3. **Qualifying Individual (QI)** – helps pay the Part B premium only; available only to people who do not receive any other Medicaid benefits.  \n4. **Qualified Disabled and Working Individuals (QDWI)** – helps pay the Part A premium only for disabled, working individuals who lost premium‑free Part A when they returned to work.  \n\nThese programs are administered by each state, and the program names and details may vary by state. [pp. 95‑96]",
+      "cited_pages": [
+        95,
+        96
+      ],
+      "unsupported_pages": [],
+      "seconds": 29.690995416603982,
+      "tool_calls": 2
+    },
+    {
+      "question": "Does Medicare pay for long-term care in a nursing home?",
+      "answer": "No. Medicare does not cover non‑medical long‑term care in a nursing home. It only pays for short‑term, skilled‑nursing facility stays that follow a qualifying hospital admission; non‑medical long‑term nursing‑home care is not covered【p. 58‑59】.",
+      "cited_pages": [
+        58,
+        59
+      ],
+      "unsupported_pages": [],
+      "seconds": 18.339958125259727,
+      "tool_calls": 1
+    },
+    {
+      "question": "What happens at the Welcome to Medicare preventive visit?",
+      "answer": "During the first 12 months after you enroll in Part B you can have a “Welcome to Medicare” preventive visit. It is **not a physical exam**. The visit includes:\n\n* A review of your medical and social history that relates to your health.  \n* Education and counseling about preventive services – such as recommended screenings, vaccines (flu, pneumococcal, etc.) and referrals to other care when needed.  \n* If you are taking an opioid prescription, the provider will assess your risk for opioid‑use disorder, evaluate pain severity and your current treatment plan, discuss non‑opioid options and may refer you to a specialist.  \n* The provider also screens for risk factors for substance‑use disorders, depression, and alcohol or tobacco use and can refer you for treatment if needed.  \n\nYou pay nothing for this visit as long as the doctor or other health‑care provider accepts assignment; however, any additional tests or services that Medicare does not cover under this preventive benefit may require coinsurance or the Part B deductible [pp. 56‑57]​.",
+      "cited_pages": [
+        56,
+        57
+      ],
+      "unsupported_pages": [],
+      "seconds": 12.674373167101294,
+      "tool_calls": 1
+    },
+    {
+      "question": "Does Medicare cover ambulance rides?",
+      "answer": "Yes. Medicare will pay for ambulance transportation when it is medically necessary.  \n\n* **Ground ambulance** – Covered for trips to a hospital, critical‑access hospital, rural emergency hospital, or skilled‑nursing facility if traveling by any other vehicle could endanger your health.  \n* **Air ambulance (helicopter or airplane)** – Covered in emergencies when ground transport would not be fast enough.  \n* **Non‑emergency ambulance** – May be covered if a doctor provides a written order stating the transport is medically necessary (e.g., for patients with end‑stage renal disease who need ambulance rides to dialysis).  \n\nIn all cases Medicare pays its usual 20 % coinsurance after the Part B deductible, and it will only cover transport to the nearest appropriate facility. [p. 34]",
+      "cited_pages": [
+        34
+      ],
+      "unsupported_pages": [],
+      "seconds": 13.377268542069942,
+      "tool_calls": 1
+    },
+    {
+      "question": "How do I appeal a coverage decision?",
+      "answer": "To appeal a coverage or payment decision:\n\n1. **Gather information** – Ask your doctor, supplier, or other health‑care provider for any records or details that will support your appeal and keep copies of everything you send or receive. [pp. 102‑102]\n\n2. **Submit the appeal** – Send a written request to Medicare (or your Medicare plan) within the required time frame. For Original Medicare you generally have 60 days after the decision; Medicare Advantage plans may have different deadlines. [pp. 103‑103]\n\n3. **Know your rights** – If the decision involves a hospital stay that was changed from inpatient to outpatient (observation), you have a right to a fast appeal while you’re still in the hospital. [pp. 102‑102] [pp. 105‑105]\n\n4. **Get help if needed** – You may appoint a representative (family member, friend, advocate, attorney, etc.) to act on your behalf, or you can contact your State Health Insurance Assistance Program (SHIP) for assistance. [pp. 104‑104]",
+      "cited_pages": [
+        102,
+        103,
+        104,
+        105
+      ],
+      "unsupported_pages": [],
+      "seconds": 16.51515516731888,
+      "tool_calls": 1
+    },
+    {
+      "question": "Where can I get hospice care?",
+      "answer": "You can receive Medicare‑certified hospice care in the place where you live—your own home, an assisted‑living facility, or a nursing home. If you need short‑term inpatient care, it must be in a Medicare‑approved facility such as a hospice facility, hospital, or skilled‑nursing facility that contracts with the hospice provider. To locate Medicare‑approved hospice providers, contact your health‑plan or use the Medicare “Care Compare” tool online. [p. 28‑29] [p. 29]",
+      "cited_pages": [
+        28,
+        29
+      ],
+      "unsupported_pages": [],
+      "seconds": 16.441761374939233,
+      "tool_calls": 1
+    },
+    {
+      "question": "How do I renew my passport?",
+      "answer": "I couldn't find this in the provided documents.",
+      "cited_pages": [],
+      "unsupported_pages": [],
+      "seconds": 15.548941582906991,
+      "tool_calls": 1
+    },
+    {
+      "question": "What are the federal income tax brackets for 2027?",
+      "answer": "I couldn't find this in the provided documents.",
+      "cited_pages": [],
+      "unsupported_pages": [],
+      "seconds": 34.186502458993345,
+      "tool_calls": 2
+    },
+    {
+      "question": "How do I apply for a U.S. student visa?",
+      "answer": "I couldn't find this in the provided documents.",
+      "cited_pages": [],
+      "unsupported_pages": [],
+      "seconds": 14.902731082867831,
+      "tool_calls": 1
+    }
+  ]
+}

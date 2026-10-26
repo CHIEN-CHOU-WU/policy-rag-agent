@@ -49,12 +49,12 @@ Source documents are public U.S. government publications (e.g. *Medicare & You*)
                     │         ▼                ▼
                     │  Streamlit web app  Claude Desktop / Code,
                     ▼                     other MCP clients
-          ┌───────────────────┐
-          │ LLM client (port) │
-          └───┬─────┬─────┬───┘
-              ▼     ▼     ▼
-         Claude  Ollama  Gemini
-          (API)  (local) (OpenAI-compatible API)
+          ┌───────────────────────────────┐
+          │       LLM client (port)       │
+          └───┬───────┬───────┬───────┬───┘
+              ▼       ▼       ▼       ▼
+           Claude  Ollama   Groq   Gemini
+            (API)  (local) (cloud) (cloud)
 ```
 
 ## Design decisions
@@ -70,7 +70,7 @@ Source documents are public U.S. government publications (e.g. *Medicare & You*)
 **Ports and adapters for storage and models.** Both external dependencies sit behind interfaces, so the agent and tools never depend on a specific vendor:
 
 - **Vector store** (`store/base.py`) — Chroma for local development; a pgvector adapter can be added without touching the agent or tools.
-- **LLM** (`llm/base.py`) — one interface for chat with tool calling. The Claude adapter is used for production quality; the Ollama adapter runs an open-source model locally for free, offline development and testing. Switching is a single setting (`LLM_PROVIDER`). Google Gemini runs through its OpenAI-compatible endpoint (`llm/openai_compat_client.py`), which Groq can reuse next.
+- **LLM** (`llm/base.py`) — one interface for chat with tool calling. The Claude adapter is used for production quality; the Ollama adapter runs an open-source model locally for free, offline development and testing. Switching is a single setting (`LLM_PROVIDER`). Groq and Google Gemini share one adapter for OpenAI-compatible endpoints (`llm/openai_compat_client.py`), so adding Groq took a base URL and a few lines of configuration.
 
 This also makes it possible to run the same evaluation across models and compare them directly.
 
@@ -84,27 +84,33 @@ Measured on *Medicare & You 2027* with 18 questions (`eval/questions.yaml`): 15 
 | qwen3:8b (Ollama, local) | Agent | 94% (17/18) | 100% | 0% |
 | qwen3.6:35b (Ollama, local) | RAG | **100% (18/18)** | 100% | 0% |
 | qwen3.6:35b (Ollama, local) | Agent | 89% (16/18) | 87% | 6% |
+| gpt-oss-120b (Groq) | RAG | 83% (15/18) | 100% | 0% |
+| gpt-oss-120b (Groq) | Agent | 89% (16/18) | 87% | 0% |
+| qwen3.8-27b (Groq) | RAG | **100% (18/18)** | 100% | 0% |
+| qwen3.8-27b (Groq) | Agent | **100% (18/18)** | 100% | 0% |
 | Claude (Anthropic API) | — | _TBD_ | _TBD_ | _TBD_ |
-| Groq (M6) | — | _TBD_ | _TBD_ | _TBD_ |
 
-- **Answer correctness** — judged by `gemini-3.8-flash` against the reference answers; declining counts as correct only on the 3 out-of-scope questions (every run declined all 3).
+- **Answer correctness** — judged by `gemini-3.8-flash` against the reference answers; declining counts as correct only on the 3 out-of-scope questions (every run declined all 3, and none declined a question the handbook answers).
 - **Citation accuracy** — share of answerable questions whose answer cites at least one page that holds the answer. Checked by code, no model involved.
 - **Unsupported citations** — share of answers citing a page the system never retrieved. Also checked by code.
 - Retrieval alone (`eval/run_retrieval_eval.py`, no LLM): the right page is the top result for 60% of questions and in the top 5 for 100% (MRR 0.76).
 
 **What the numbers show**
 
-- **The agent didn't beat RAG on its own.** Both local models searched only about once per question (1.0–1.1 tool calls). When that first search missed the key page — e.g. a search for "referral to see a specialist" returned the glossary definition instead of the comparison table — the agent answered from what it had instead of searching again. In manual tests Gemini did search a second time when the first results fell short, which is where an agent pays off.
+- **The best model scored 100% in both modes** (`qwen3.8-27b` on Groq's free tier), and the local `qwen3.6:35b` matched it with RAG — so a free setup can answer this handbook reliably.
+- **Bigger isn't automatically better.** `gpt-oss-120b`, the largest model tested, scored lowest after `qwen3:8b` with RAG. Its misses were incomplete rather than wrong: it answered the question but left out a key fact, such as that Medicare Advantage plans may cover dental care.
+- **The agent didn't reliably beat RAG.** It helped the two models that were weaker with RAG (`qwen3:8b` 78% → 94%, `gpt-oss-120b` 83% → 89%), tied `qwen3.8-27b`, and hurt `qwen3.6:35b` (100% → 89%). Every model searched only about once per question (1.0–1.2 tool calls on average), and a second search happened on just a few questions. The typical failure: a reworded search for "referral to see a specialist" returned the glossary definition instead of the comparison table, and no model searched again — two of them then answered that a referral is generally required, which is wrong for Original Medicare.
 - **The citation check catches real mistakes.** A model sometimes turns a cross-reference in the text ("go to pages 33–57") into a citation; those pages were never retrieved, so they are flagged rather than trusted.
 
 **About the judge.** LLM judges disagree, so the same saved answers were graded by three judges (`--rejudge`). `gemini-3.8-flash` was the strictest and the one whose verdicts held up in a manual check of the disagreements; the local `qwen3.6:35b` agreed with it on 87% of verdicts and `gemini-3.5-flash-lite` on 83%, both mainly by passing answers that left out a key fact. With 15 answerable questions, one question is about 6 points, so treat small differences as noise.
 
-Gemini wasn't evaluated as an answering model: its free tier allows 20 requests per model per day, and an agent run takes several requests per question.
+Gemini wasn't evaluated as an answering model: its free tier allows 20 requests per model per day, and an agent run takes several requests per question. Groq's free tier (1,000 requests per day, 8,000 tokens per minute) was enough; when the token limit is hit, the client waits as long as Groq's `retry-after` header says and retries.
 
 Run it with:
 
 ```bash
 uv run python eval/run_eval.py                                   # answer with LLM_PROVIDER, Gemini judge
+LLM_PROVIDER=groq GROQ_MODEL=qwen/qwen3.8-27b uv run python eval/run_eval.py  # a Groq model
 uv run python eval/run_eval.py --judge ollama                    # free local judge (qwen3.6:35b)
 uv run python eval/run_eval.py --rejudge                         # re-grade saved answers
 OLLAMA_MODEL=qwen3.6:35b uv run python eval/run_eval.py          # evaluate another model
@@ -117,6 +123,7 @@ Saved answers and graded results are in `eval/results/`.
 - **Python 3.12**, managed with [uv](https://github.com/astral-sh/uv)
 - **Claude API** (Anthropic) for reasoning and tool use
 - **Ollama** for running open-source models locally during development
+- **Groq** (OpenAI-compatible API) for hosted open models on a free tier
 - **Google Gemini** (OpenAI-compatible API) as a hosted model and as the evaluation judge
 - **PyMuPDF** for PDF parsing
 - **Chroma** as the vector store
@@ -150,6 +157,10 @@ ANTHROPIC_API_KEY=your-key-here
 # Option C — Google Gemini (free tier; also the evaluation judge)
 LLM_PROVIDER=gemini
 GEMINI_API_KEY=your-key-here
+
+# Option D — Groq (free tier, fast hosted open models)
+LLM_PROVIDER=groq
+GROQ_API_KEY=your-key-here
 ```
 
 For Option A, install [Ollama](https://ollama.com) and pull a model that supports tool calling:
@@ -226,7 +237,7 @@ policy-rag-agent/
 │   │   ├── anthropic_client.py  # Claude adapter
 │   │   ├── ollama_client.py     # Ollama adapter
 │   │   ├── factory.py           # picks the adapter from LLM_PROVIDER
-│   │   └── openai_compat_client.py  # Gemini adapter (OpenAI-compatible; Groq next)
+│   │   └── openai_compat_client.py  # Groq / Gemini adapter (OpenAI-compatible)
 │   ├── retrieve.py           # search + format excerpts for the model
 │   ├── rag.py                # answer with page citations, checked against sources
 │   ├── tools.py              # search_policy / get_page, shared by agent and MCP server
@@ -251,7 +262,7 @@ policy-rag-agent/
 - [x] M3 — Agent with `search_policy` and `get_page` tools
 - [x] M4 — MCP server
 - [x] M5 — Web UI, evaluation results, demo
-- [ ] M6 — Add a Groq adapter (Gemini landed in M5); run the same evaluation on every provider and publish the comparison
+- [x] M6 — Add a Groq adapter (Gemini landed in M5); run the same evaluation on every provider and publish the comparison
 
 ## Disclaimer
 

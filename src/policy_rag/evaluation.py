@@ -50,7 +50,8 @@ class Attempt:
 
     @property
     def declined(self) -> bool:
-        return self.answer.strip() == NOT_FOUND
+        # Leading with the fixed reply counts, even if a short explanation follows.
+        return self.answer.strip().startswith(NOT_FOUND)
 
 
 @dataclass(frozen=True)

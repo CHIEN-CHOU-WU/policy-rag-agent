@@ -3,7 +3,7 @@
 from policy_rag.config import Settings
 from policy_rag.llm.base import LLMClient, LLMError
 
-PROVIDERS = ("ollama", "gemini", "anthropic")
+PROVIDERS = ("ollama", "groq", "gemini", "anthropic")
 
 
 def create_llm_client(settings: Settings) -> LLMClient:
@@ -28,6 +28,18 @@ def create_llm_client(settings: Settings) -> LLMClient:
                 settings.gemini_model,
                 "Gemini",
                 requests_per_minute=settings.gemini_rpm,
+            )
+        case "groq":
+            from policy_rag.llm.openai_compat_client import GROQ_BASE_URL, OpenAICompatClient
+
+            if not settings.groq_api_key:
+                raise LLMError("No Groq API key found. Set GROQ_API_KEY in .env.")
+            return OpenAICompatClient(
+                GROQ_BASE_URL,
+                settings.groq_api_key,
+                settings.groq_model,
+                "Groq",
+                requests_per_minute=settings.groq_rpm,
             )
         case other:
             raise ValueError(f"Unknown LLM_PROVIDER {other!r}; expected one of {', '.join(PROVIDERS)}.")

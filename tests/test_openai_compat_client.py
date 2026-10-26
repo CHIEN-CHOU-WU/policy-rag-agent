@@ -120,3 +120,10 @@ def test_calls_are_spaced_to_the_rate_limit(monkeypatch: pytest.MonkeyPatch) -> 
     client.complete("system", "two")
 
     assert sleeps == [9.0]
+
+
+def test_groq_without_a_key_has_a_clear_message(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("LLM_PROVIDER", "groq")
+    monkeypatch.setenv("GROQ_API_KEY", "")
+    with pytest.raises(LLMError, match="GROQ_API_KEY"):
+        create_llm_client(load_settings())

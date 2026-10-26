@@ -1,4 +1,4 @@
-"""Adapter for providers with an OpenAI-compatible chat API (Gemini today, Groq next).
+"""Adapter for providers with an OpenAI-compatible chat API (Gemini and Groq).
 
 The only module that imports ``openai``. The provider is chosen by ``base_url``;
 nothing here calls OpenAI's own service unless pointed at it.
@@ -22,6 +22,7 @@ from policy_rag.llm.base import (
 )
 
 GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai/"
+GROQ_BASE_URL = "https://api.groq.com/openai/v1"
 
 # Free tiers rate-limit aggressively; the SDK retries 429s with backoff.
 _MAX_RETRIES = 5
